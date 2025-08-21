@@ -1,0 +1,23 @@
+# ---- Java ----
+*.class
+*.log
+
+# ---- IntelliJ IDEA ----
+# Exclude user-specific & volatile files
+.idea/workspace.xml
+.idea/shelf/
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/httpRequests/
+.idea/caches/
+.idea/usage.statistics.xml
+
+# Exclude project libraries (can differ per machine)
+.idea/libraries/
+
+# Build output
+out/
+
+# ---- OS-specific ----
+.DS_Store
+Thumbs.db
