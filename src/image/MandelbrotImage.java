@@ -19,7 +19,8 @@ public class MandelbrotImage extends BufferedImage {
     private final double zoom;
     private final int maxN;
 
-    private ColorFunction colorFunction;
+    private ColorFunction colorFunction = ColorFunction.BLACK_AND_WHITE;
+    private ColorFunctionParameters colorFuncParams = ColorFunctionParameters.defaultParameters();
 
     /**
      * Constructor
@@ -52,6 +53,23 @@ public class MandelbrotImage extends BufferedImage {
     }
 
     /**
+     * Colours the image by using the colorFunction with inputs from the RepresentationValue array
+     * to determine the colour of each pixel.
+     */
+    public void colorImage() {
+        if(colorFunction == null) throw new RuntimeException("Color function not set");
+        for(int x = 0; x < getWidth(); x++) {
+            for(int y = 0; y < getHeight(); y++) {
+                RepresentationValue val = array[x][y];
+                if(val == null) throw new NullPointerException(
+                        "Null found in RepresentationValue array at " + x + ", " + y
+                );
+                setRGB(x, y, colorFunction.apply(val, colorFuncParams).getRGB());
+            }
+        }
+    }
+
+    /**
      * Computes the value of the complex point corresponding to the pixel at
      * <code>(x, y)</code>
      * @param x the x coordinate of the chosen pixel
@@ -66,6 +84,26 @@ public class MandelbrotImage extends BufferedImage {
         double real = minReal + (realRange / getWidth() * x);
         double imag = minImag + (zoom / getHeight() * (getHeight() - y));
         return new Complex(real, imag);
+    }
+
+    public void setColorFunction(ColorFunction colorFunc) {
+        this.colorFunction = colorFunc;
+    }
+
+    public void setGradient(Gradient gradient) {
+        colorFuncParams.setGradient(gradient);
+    }
+
+    public void setFlux(double flux) {
+        colorFuncParams.setFlux(flux);
+    }
+
+    public void setRenderDistEst(boolean renderDistEst) {
+        colorFuncParams.setRenderDistEst(renderDistEst);
+    }
+
+    public void setMaxDistRendered(double maxDistRendered) {
+        colorFuncParams.setMaxDistRendered(maxDistRendered);
     }
 
 }
