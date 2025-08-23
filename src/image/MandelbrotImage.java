@@ -1,5 +1,6 @@
 package image;
 
+import algorithm.Algorithm;
 import algorithm.RepresentationValue;
 import util.Complex;
 
@@ -37,5 +38,34 @@ public class MandelbrotImage extends BufferedImage {
         this.maxN = maxN;
     }
 
+    /**
+     * Populates the RepresentationValue array by running the algorithm on each complex point
+     * <code>c</code> which corresponds to a pixel in the image.
+     */
+    public void computeRepresentationValues() {
+        for(int x = 0; x < getWidth(); x++) {
+            for(int y = 0; y < getHeight(); y++) {
+                Complex c = numAt(x, y);
+                array[x][y] = Algorithm.run(c, c, maxN);
+            }
+        }
+    }
+
+    /**
+     * Computes the value of the complex point corresponding to the pixel at
+     * <code>(x, y)</code>
+     * @param x the x coordinate of the chosen pixel
+     * @param y the y coordinate of the chosen pixel
+     * @return the value of the complex point corresponding to the pixel at
+     * <code>(x, y)</code>
+     */
+    public Complex numAt(int x, int y) {
+        double realRange = zoom / getHeight() * getWidth();
+        double minReal = center.real() - realRange / 2d;
+        double minImag = center.imaginary() - zoom / 2d;
+        double real = minReal + (realRange / getWidth() * x);
+        double imag = minImag + (zoom / getHeight() * (getHeight() - y));
+        return new Complex(real, imag);
+    }
 
 }
