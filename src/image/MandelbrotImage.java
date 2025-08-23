@@ -23,6 +23,32 @@ public class MandelbrotImage extends BufferedImage {
     private ColorFunctionParameters colorFuncParams = ColorFunctionParameters.defaultParameters();
 
     /**
+     * Creates a MandelbrotImage with the specified dimensions, centred on the specified
+     * window of the complex plane, generated using the specified maximum number of iterations, and
+     * coloured with the specified function and parameters.
+     * @param width the width of the image in pixels
+     * @param height the height of the image in pixels
+     * @param center the complex point the image is centered on
+     * @param zoom the level of zoom. This is equal to the imaginary range of the area
+     *             of the complex plane covered by the image.
+     * @param maxN the maximum number of iterations allowed when running the algorithm on each point
+     * @param colorFunction the ColorFunction used to determine the colour of each pixel
+     * @param colorFuncParams the parameters used by <code>colorFunction</code>
+     * @return An image of the Mandelbrot Set
+     */
+    public static MandelbrotImage of(
+            int width, int height, Complex center, double zoom, int maxN,
+            ColorFunction colorFunction, ColorFunctionParameters colorFuncParams
+    ) {
+        MandelbrotImage img = new MandelbrotImage(width, height, center, zoom, maxN);
+        img.setColorFunction(colorFunction);
+        img.setColorFuncParams(colorFuncParams);
+        img.computeRepresentationValues();
+        img.colorImage();
+        return img;
+    }
+
+    /**
      * Constructor
      * @param width the width of the image in pixels
      * @param height the height of the image in pixels
@@ -31,7 +57,7 @@ public class MandelbrotImage extends BufferedImage {
      *             of the complex plane covered by the image.
      * @param maxN the maximum number of iterations allowed when running the algorithm on each point
      */
-    public MandelbrotImage(int width, int height, Complex center, double zoom, int maxN) {
+    protected MandelbrotImage(int width, int height, Complex center, double zoom, int maxN) {
         super(width, height, BufferedImage.TYPE_INT_RGB);
         array = new RepresentationValue[width][height];
         this.center = center;
@@ -43,7 +69,7 @@ public class MandelbrotImage extends BufferedImage {
      * Populates the RepresentationValue array by running the algorithm on each complex point
      * <code>c</code> which corresponds to a pixel in the image.
      */
-    public void computeRepresentationValues() {
+    protected void computeRepresentationValues() {
         for(int x = 0; x < getWidth(); x++) {
             for(int y = 0; y < getHeight(); y++) {
                 Complex c = numAt(x, y);
@@ -86,8 +112,15 @@ public class MandelbrotImage extends BufferedImage {
         return new Complex(real, imag);
     }
 
+
+    // ColorFunction controls
+
     public void setColorFunction(ColorFunction colorFunc) {
         this.colorFunction = colorFunc;
+    }
+
+    public void setColorFuncParams(ColorFunctionParameters colorFuncParams) {
+        this.colorFuncParams = colorFuncParams;
     }
 
     public void setGradient(Gradient gradient) {
