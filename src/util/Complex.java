@@ -10,6 +10,7 @@ public record Complex(double real, double imaginary) {
 
     public static final Complex ZERO = new Complex(0, 0);
     public static final Complex ONE = new Complex(1, 0);
+    public static final Complex DEFAULT_CENTER = new Complex(-0.5, 0);
 
     /**
      * Computes the sum of this complex number and another.

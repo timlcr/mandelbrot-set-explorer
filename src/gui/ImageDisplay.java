@@ -14,8 +14,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 public class ImageDisplay extends JPanel {
 
@@ -28,10 +26,6 @@ public class ImageDisplay extends JPanel {
         super(new BorderLayout());
         add(imageArea, BorderLayout.CENTER);
         imageArea.add(imagePanel, new GridBagConstraints());
-        imageArea.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) { layoutImageArea(); }
-        });
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(image1button());
@@ -42,35 +36,36 @@ public class ImageDisplay extends JPanel {
 
     public void setImage(MandelbrotImage image) {
         this.image = image;
-        layoutImageArea();
+        imagePanel.revalidate();
+        imagePanel.repaint();
     }
 
     private JPanel imagePanel() {
         JPanel panel =  new JPanel() {
+
             @Override
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 if (image == null) return;
                 g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
             }
+
+            @Override
+            public Dimension getPreferredSize() {
+                if (image == null) return new Dimension(200, 200);
+                double aspect = image.getWidth() / (double) image.getHeight();
+                int w = imageArea.getWidth();
+                int h = imageArea.getHeight();
+                if (w == 0 || h == 0) return super.getPreferredSize();
+                if ((double) w / h > aspect) {
+                    return new Dimension((int) (h * aspect), h);
+                } else {
+                    return new Dimension(w, (int) (w / aspect));
+                }
+            }
         };
         panel.setBorder(new LineBorder(Color.BLACK));
         return panel;
-    }
-
-    private void layoutImageArea() {
-        if (image == null) return;
-        double imageAspectRatio = image.getWidth() / (double) image.getHeight();
-        double areaAspectRatio = imageArea.getWidth() / (double) imageArea.getHeight();
-        if (areaAspectRatio > imageAspectRatio) {
-            int imageWidth = (int) (imageArea.getHeight() * imageAspectRatio);
-            imagePanel.setPreferredSize(new Dimension(imageWidth, imageArea.getHeight()));
-        } else {
-            int imageHeight = (int) (imageArea.getWidth() / imageAspectRatio);
-            imagePanel.setPreferredSize(new Dimension(imageArea.getWidth(), imageHeight));
-        }
-        imagePanel.revalidate();
-        imagePanel.repaint();
     }
 
     MandelbrotImage image1 = MandelbrotImage.of(500, 500, Complex.DEFAULT_CENTER, 2.5, 100,
