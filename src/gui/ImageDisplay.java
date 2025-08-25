@@ -5,6 +5,7 @@ import image.ColorFunctionParameters;
 import image.MandelbrotImage;
 import util.Complex;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
@@ -21,21 +22,31 @@ public class ImageDisplay extends JPanel {
 
     private final JPanel imageArea = new JPanel(new GridBagLayout());
     private final JPanel imagePanel = imagePanel();
+    private final ZoomLabel zoomLabel;
 
-    public ImageDisplay() {
+    public ImageDisplay(MandelbrotImage image) {
         super(new BorderLayout());
+        this.image = image;
+        setBorder(BorderFactory.createLoweredBevelBorder());
+
         add(imageArea, BorderLayout.CENTER);
         imageArea.add(imagePanel, new GridBagConstraints());
+
+        zoomLabel = new ZoomLabel(image);
+        add(zoomLabel, BorderLayout.SOUTH);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(image1button());
         buttonPanel.add(image2button());
         buttonPanel.add(image3button());
-        add(buttonPanel, BorderLayout.SOUTH);
+        add(buttonPanel, BorderLayout.NORTH);
     }
+
+    public ImageDisplay() { this(null); }
 
     public void setImage(MandelbrotImage image) {
         this.image = image;
+        zoomLabel.update(image);
         imagePanel.revalidate();
         imagePanel.repaint();
     }

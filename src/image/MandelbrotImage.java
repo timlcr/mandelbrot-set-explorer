@@ -5,6 +5,7 @@ import algorithm.RepresentationValue;
 import util.Complex;
 
 import java.awt.image.BufferedImage;
+import java.util.Scanner;
 
 /**
  * A visual representation of the Mandelbrot Set stored in a BufferedImage object.
@@ -15,9 +16,9 @@ public class MandelbrotImage extends BufferedImage {
 
     private final RepresentationValue[][] array;
 
-    private final Complex center;
-    private final double zoom;
-    private final int maxN;
+    public final Complex center;
+    public final double zoom;
+    public final int maxN;
 
     private ColorFunction colorFunction = ColorFunction.BLACK_AND_WHITE;
     private ColorFunctionParameters colorFuncParams = ColorFunctionParameters.defaultParameters();
