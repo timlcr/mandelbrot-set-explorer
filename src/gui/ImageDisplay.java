@@ -52,11 +52,10 @@ public class ImageDisplay extends JPanel {
 
             @Override
             public Dimension getPreferredSize() {
-                if (image == null) return new Dimension(200, 200);
-                double aspect = image.getWidth() / (double) image.getHeight();
                 int w = imageArea.getWidth();
                 int h = imageArea.getHeight();
-                if (w == 0 || h == 0) return super.getPreferredSize();
+                if (image == null || w == 0 || h == 0) return super.getPreferredSize();
+                double aspect = image.getWidth() / (double) image.getHeight();
                 if ((double) w / h > aspect) {
                     return new Dimension((int) (h * aspect), h);
                 } else {
@@ -68,10 +67,10 @@ public class ImageDisplay extends JPanel {
         return panel;
     }
 
-    MandelbrotImage image1 = MandelbrotImage.of(500, 500, Complex.DEFAULT_CENTER, 2.5, 100,
+    MandelbrotImage image1 = MandelbrotImage.of(500, 500, new Complex(-0.7435731395744708, -0.11905172969043766), 3.70e-03, 2500,
             ColorFunction.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
 
-    MandelbrotImage image2 = MandelbrotImage.of(750, 500, Complex.DEFAULT_CENTER, 2.5, 100,
+    MandelbrotImage image2 = MandelbrotImage.of(750, 500, new Complex(0.3949217276354813, -0.14004692661352403), 2.18e-02, 1000,
             ColorFunction.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
 
     MandelbrotImage image3 = MandelbrotImage.of(500, 1000, Complex.DEFAULT_CENTER, 2.5, 100,
