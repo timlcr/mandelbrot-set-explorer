@@ -41,7 +41,7 @@ public class Workspace extends JPanel {
         if (!dataDir.exists()) { dataDir.mkdirs(); }
         fileChooser.setCurrentDirectory(dataDir);
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            MandelbrotImage image = MandelbrotImageIO.load(fileChooser.getSelectedFile().getAbsolutePath());
+            MandelbrotImage image = MandelbrotImageIO.load(fileChooser.getSelectedFile());
             imageDisplay.setImage(image);
         }
     }
