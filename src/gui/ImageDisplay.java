@@ -1,12 +1,7 @@
 package gui;
 
-import image.ColorFunctionParameters;
-import image.ColorFunctionType;
 import image.MandelbrotImage;
-import util.Complex;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import java.awt.BorderLayout;
@@ -16,6 +11,9 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+/**
+ * Displays a MandelbrotImage, and information about the location of the zoom.
+ */
 public class ImageDisplay extends JPanel {
 
     private MandelbrotImage image;
@@ -24,6 +22,10 @@ public class ImageDisplay extends JPanel {
     private final JPanel imagePanel = imagePanel();
     private final ZoomLabel zoomLabel;
 
+    /**
+     * Constructor
+     * @param image the image the ImageDisplay is initialised with
+     */
     public ImageDisplay(MandelbrotImage image) {
         super(new BorderLayout());
         this.image = image;
@@ -33,16 +35,17 @@ public class ImageDisplay extends JPanel {
 
         zoomLabel = new ZoomLabel(image);
         add(zoomLabel, BorderLayout.SOUTH);
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(image1button());
-        buttonPanel.add(image2button());
-        buttonPanel.add(image3button());
-        add(buttonPanel, BorderLayout.NORTH);
     }
 
+    /**
+     * Constructor with no image to be initialised with
+     */
     public ImageDisplay() { this(null); }
 
+    /**
+     * Starts displaying the specified image
+     * @param image the image to be displayed
+     */
     public void setImage(MandelbrotImage image) {
         this.image = image;
         zoomLabel.update(image);
@@ -50,6 +53,10 @@ public class ImageDisplay extends JPanel {
         imagePanel.repaint();
     }
 
+    /**
+     * Returns the image being displayed
+     * @return the image being displayed
+     */
     public MandelbrotImage image() { return image; }
 
     private JPanel imagePanel() {
@@ -77,35 +84,6 @@ public class ImageDisplay extends JPanel {
         };
         panel.setBorder(new LineBorder(Color.BLACK));
         return panel;
-    }
-
-
-
-    MandelbrotImage image1 = MandelbrotImage.of(500, 500, new Complex(-0.7435731395744708, -0.11905172969043766), 3.70e-03, 2500,
-            ColorFunctionType.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
-
-    MandelbrotImage image2 = MandelbrotImage.of(750, 500, new Complex(0.3949217276354813, -0.14004692661352403), 2.18e-02, 1000,
-            ColorFunctionType.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
-
-    MandelbrotImage image3 = MandelbrotImage.of(500, 1000, Complex.DEFAULT_CENTER, 2.5, 100,
-            ColorFunctionType.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
-
-    private JButton image1button() {
-        JButton button = new JButton("Image 1");
-        button.addActionListener(e -> setImage(image1));
-        return button;
-    }
-
-    private JButton image2button() {
-        JButton button = new JButton("Image 2");
-        button.addActionListener(e -> setImage(image2));
-        return button;
-    }
-
-    private JButton image3button() {
-        JButton button = new JButton("Image 3");
-        button.addActionListener(e -> setImage(image3));
-        return button;
     }
 
 }

@@ -11,6 +11,11 @@ import java.util.function.BiFunction;
  */
 public interface ColorFunction extends BiFunction<RepresentationValue, ColorFunctionParameters, Color> {
 
+    /**
+     * Returns a ColorFunction specified by the type.
+     * @param type the type of ColorFunction being retrieved
+     * @return a ColorFunction of the type <code>type</code>
+     */
     static ColorFunction of(ColorFunctionType type) {
         return switch (type) {
             case BLACK_AND_WHITE -> (val, params) ->

@@ -1,8 +1,8 @@
 package image;
 
-import java.io.Serial;
-import java.io.Serializable;
-
+/**
+ * Enum for storing the ColorFunctions used by this program.
+ */
 public enum ColorFunctionType {
     BLACK_AND_WHITE,
 }

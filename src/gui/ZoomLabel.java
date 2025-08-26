@@ -24,13 +24,17 @@ public class ZoomLabel extends JLabel {
     /**
      * Constructs a ZoomLabel and displays the zoom info for the specified image.
      * If the image is null the label is left empty.
-     * @param image the <code>MandelbrotImage</code> from which the zoom info being displayed is from
+     * @param image the <code>MandelbrotImage</code> from which the zoom info is to be displayed
      */
     public ZoomLabel(MandelbrotImage image) {
         addMouseListener(mouseListener());
         if (image != null) update(image);
     }
 
+    /**
+     * Updates the text on this ZoomLabel to show the zoom info for the specified image.
+     * @param image the image from which the zoom info is to be displayed
+     */
     public void update(MandelbrotImage image) {
         center = image.center;
         zoom = image.zoom;

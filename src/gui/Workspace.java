@@ -13,12 +13,18 @@ import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A component with the ability to create MandelbrotImages, display them, and load and save them.
+ */
 public class Workspace extends JPanel {
 
     private final ImageDisplay imageDisplay = new ImageDisplay();
 
     private final JFileChooser fileChooser = new JFileChooser();
 
+    /**
+     * Constructs a Workspace
+     */
     public Workspace() {
         super(new BorderLayout());
 
@@ -28,6 +34,9 @@ public class Workspace extends JPanel {
         add(savePanel(), BorderLayout.SOUTH);
     }
 
+    /**
+     * Saves the MandelbrotImage data to disc
+     */
     public void handleSave() {
         MandelbrotImage image = image();
         if (image == null) return;
@@ -36,6 +45,9 @@ public class Workspace extends JPanel {
         MandelbrotImageIO.saveImageData(image, dataFilename);
     }
 
+    /**
+     * Loads a MandelbrotImage from a data file selected by the user.
+     */
     public void handleLoad() {
         File dataDir = new File("storage/imagedata");
         if (!dataDir.exists()) { dataDir.mkdirs(); }
@@ -46,6 +58,9 @@ public class Workspace extends JPanel {
         }
     }
 
+    /**
+     * Exports the image being displayed as a png to a location selected by the user.
+     */
     public void handleExport() {
         MandelbrotImage image = image();
         if (image == null) return;
@@ -60,6 +75,10 @@ public class Workspace extends JPanel {
         }
     }
 
+    /**
+     * Returns the image being displayed.
+     * @return the image being displayed
+     */
     public MandelbrotImage image() { return imageDisplay.image(); }
 
     private JPanel savePanel() {

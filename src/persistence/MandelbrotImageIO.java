@@ -20,10 +20,17 @@ import java.io.ObjectOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * Contains methods for saving/loading MandelbrotImages to/from disc.
+ */
 public class MandelbrotImageIO {
 
-    private static final JFileChooser fileChooser = new JFileChooser();
-
+    /**
+     * Saves all necessary data to allow a MandelbrotImage to be loaded into
+     * the program later and altered further.
+     * @param image the MandelbrotImage being saved
+     * @param filename the name of the file the data is saved to
+     */
     public static void saveImageData(MandelbrotImage image, String filename) {
         MandelbrotImageData data = image.data();
         try (FileOutputStream fos = new FileOutputStream(filename);
@@ -60,6 +67,11 @@ public class MandelbrotImageIO {
         } catch (Exception e) { throw new RuntimeException("Error saving image data", e); }
     }
 
+    /**
+     * Loads a MandelbrotImage from a data file.
+     * @param file the data file
+     * @return a MandelbrotImage specified by the data in <code>file</code>
+     */
     public static MandelbrotImage load(File file) {
         try (FileInputStream fis = new FileInputStream(file);
              BufferedInputStream bis = new BufferedInputStream(fis);
