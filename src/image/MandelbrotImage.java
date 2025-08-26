@@ -42,9 +42,12 @@ public class MandelbrotImage extends BufferedImage {
             int width, int height, Complex center, double zoom, int maxN,
             ColorFunctionType colorFunc, ColorFunctionParameters colorFuncParams
     ) {
+        boolean legal = width > 0 && height > 0 && center != null && zoom > 0 && maxN >= 0
+                && colorFunc != null && colorFuncParams != null;
+        if (!legal) throw new IllegalArgumentException();
         MandelbrotImage img = new MandelbrotImage(width, height, center, zoom, maxN);
-        img.setColorFunction(colorFunc);
-        img.setColorFuncParams(colorFuncParams);
+        img.colorFuncType = colorFunc;
+        img.colorFuncParams = colorFuncParams;
         img.computeRepresentationValues();
         img.colorImage();
         return img;
@@ -127,62 +130,35 @@ public class MandelbrotImage extends BufferedImage {
 
     // ColorFunction controls
 
-    /**
-     * Sets the ColorFunction to the specified type and recolours the image.
-     * @param colorFunc the new type of ColorFunction
-     */
     public void setColorFunction(ColorFunctionType colorFunc) {
         this.colorFuncType = colorFunc;
         this.colorFunction = ColorFunction.of(colorFunc);
         colorImage();
     }
 
-    /**
-     * Sets all the colour function parameters and recolours the image.
-     * @param colorFuncParams the new colour function parameters
-     */
     public void setColorFuncParams(ColorFunctionParameters colorFuncParams) {
         this.colorFuncParams = colorFuncParams;
-        colorImage();
     }
 
-    /**
-     * Sets the gradient used by the colour function and recolours the image.
-     * @param gradient the new gradient
-     */
     public void setGradient(Gradient gradient) {
         colorFuncParams.setGradient(gradient);
-        colorImage();
     }
 
-    /**
-     * Sets the colour flux level used by the colour function and recolours the image.
-     * @param flux the new colour flux level
-     */
     public void setFlux(double flux) {
         colorFuncParams.setFlux(flux);
-        colorImage();
     }
 
-    /**
-     * Sets the renderDistEst property of the colour function and recolours the image. If true the distance estimate will be rendered
-     * on the image.
-     * @param renderDistEst the new renderDistEst value
-     */
     public void setRenderDistEst(boolean renderDistEst) {
         colorFuncParams.setRenderDistEst(renderDistEst);
-        colorImage();
     }
 
-    /**
-     * Sets the maximum distance estimate rendered property used by the colour function,
-     * and recolours the image.
-     * @param maxDistRendered the new maxDistRendered value
-     */
     public void setMaxDistRendered(double maxDistRendered) {
         colorFuncParams.setMaxDistRendered(maxDistRendered);
-        colorImage();
     }
+
+
+    public ColorFunctionType colorFunctionType() { return colorFuncType; }
+    public ColorFunctionParameters colorFuncParams() { return colorFuncParams; }
 
     /**
      * For serialisation.
