@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.Border;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
@@ -32,6 +33,7 @@ public class ColorControls extends JDialog {
     public ColorControls(Observer<Void> repainter, MandelbrotImage image) {
         this.repainter = repainter;
         setTitle("Colour controls");
+        setMinimumSize(new Dimension(200, 350));
         add(controlsPanel(), BorderLayout.CENTER);
         setImage(image);
         setupInputFields();
@@ -59,6 +61,7 @@ public class ColorControls extends JDialog {
     }
 
     private void handleRecolor() {
+        if (image == null) return;
         image.setColorFunction(colorFunctionSelector.get());
         ColorFunctionParameters params = new ColorFunctionParameters(
                 gradientSelector.get(), fluxField.get(), renderDistEstButton.isSelected(), maxDistEstField.get()
