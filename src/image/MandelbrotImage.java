@@ -63,6 +63,10 @@ public class MandelbrotImage extends BufferedImage {
         this(new RepresentationValue[width][height], width, height, center, zoom, maxN);
     }
 
+    /**
+     * Private constructor for creating a MandelbrotImage with
+     * its RepresentationValue array already initialised.
+     */
     private MandelbrotImage(
             RepresentationValue[][] array, int width, int height, Complex center, double zoom, int maxN
     ) {
@@ -123,29 +127,61 @@ public class MandelbrotImage extends BufferedImage {
 
     // ColorFunction controls
 
+    /**
+     * Sets the ColorFunction to the specified type and recolours the image.
+     * @param colorFunc the new type of ColorFunction
+     */
     public void setColorFunction(ColorFunctionType colorFunc) {
         this.colorFuncType = colorFunc;
         this.colorFunction = ColorFunction.of(colorFunc);
+        colorImage();
     }
 
+    /**
+     * Sets all the colour function parameters and recolours the image.
+     * @param colorFuncParams the new colour function parameters
+     */
     public void setColorFuncParams(ColorFunctionParameters colorFuncParams) {
         this.colorFuncParams = colorFuncParams;
+        colorImage();
     }
 
+    /**
+     * Sets the gradient used by the colour function and recolours the image.
+     * @param gradient the new gradient
+     */
     public void setGradient(Gradient gradient) {
         colorFuncParams.setGradient(gradient);
+        colorImage();
     }
 
+    /**
+     * Sets the colour flux level used by the colour function and recolours the image.
+     * @param flux the new colour flux level
+     */
     public void setFlux(double flux) {
         colorFuncParams.setFlux(flux);
+        colorImage();
     }
 
+    /**
+     * Sets the renderDistEst property of the colour function and recolours the image. If true the distance estimate will be rendered
+     * on the image.
+     * @param renderDistEst the new renderDistEst value
+     */
     public void setRenderDistEst(boolean renderDistEst) {
         colorFuncParams.setRenderDistEst(renderDistEst);
+        colorImage();
     }
 
+    /**
+     * Sets the maximum distance estimate rendered property used by the colour function,
+     * and recolours the image.
+     * @param maxDistRendered the new maxDistRendered value
+     */
     public void setMaxDistRendered(double maxDistRendered) {
         colorFuncParams.setMaxDistRendered(maxDistRendered);
+        colorImage();
     }
 
     /**
@@ -157,6 +193,11 @@ public class MandelbrotImage extends BufferedImage {
                 array, colorFuncType, colorFuncParams);
     }
 
+    /**
+     * Constructs a MandelbrotImage from a MandelbrotImageData object.
+     * @param data the data object from which to construct the image from
+     * @return a MandelbrotImage initialised with respect to the MandelbrotImageData object parameter
+     */
     public static MandelbrotImage fromData(MandelbrotImageData data) {
         MandelbrotImage image = new MandelbrotImage(data.array(), data.width(), data.height(),
                 data.center(), data.zoom(), data.maxN());
