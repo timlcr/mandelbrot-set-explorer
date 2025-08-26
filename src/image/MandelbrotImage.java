@@ -2,10 +2,10 @@ package image;
 
 import algorithm.Algorithm;
 import algorithm.RepresentationValue;
+import persistence.MandelbrotImageData;
 import util.Complex;
 
 import java.awt.image.BufferedImage;
-import java.util.Scanner;
 
 /**
  * A visual representation of the Mandelbrot Set stored in a BufferedImage object.
@@ -20,8 +20,9 @@ public class MandelbrotImage extends BufferedImage {
     public final double zoom;
     public final int maxN;
 
-    private ColorFunction colorFunction = ColorFunction.BLACK_AND_WHITE;
-    private ColorFunctionParameters colorFuncParams = ColorFunctionParameters.defaultParameters();
+    private ColorFunctionType colorFuncType;
+    private ColorFunction colorFunction;
+    private ColorFunctionParameters colorFuncParams;
 
     /**
      * Creates a MandelbrotImage with the specified dimensions, centred on the specified
@@ -33,16 +34,16 @@ public class MandelbrotImage extends BufferedImage {
      * @param zoom the level of zoom. This is equal to the imaginary range of the area
      *             of the complex plane covered by the image.
      * @param maxN the maximum number of iterations allowed when running the algorithm on each point
-     * @param colorFunction the ColorFunction used to determine the colour of each pixel
+     * @param colorFunc the ColorFunction used to determine the colour of each pixel
      * @param colorFuncParams the parameters used by <code>colorFunction</code>
      * @return An image of the Mandelbrot Set
      */
     public static MandelbrotImage of(
             int width, int height, Complex center, double zoom, int maxN,
-            ColorFunction colorFunction, ColorFunctionParameters colorFuncParams
+            ColorFunctionType colorFunc, ColorFunctionParameters colorFuncParams
     ) {
         MandelbrotImage img = new MandelbrotImage(width, height, center, zoom, maxN);
-        img.setColorFunction(colorFunction);
+        img.setColorFunction(colorFunc);
         img.setColorFuncParams(colorFuncParams);
         img.computeRepresentationValues();
         img.colorImage();
@@ -59,8 +60,14 @@ public class MandelbrotImage extends BufferedImage {
      * @param maxN the maximum number of iterations allowed when running the algorithm on each point
      */
     protected MandelbrotImage(int width, int height, Complex center, double zoom, int maxN) {
+        this(new RepresentationValue[width][height], width, height, center, zoom, maxN);
+    }
+
+    private MandelbrotImage(
+            RepresentationValue[][] array, int width, int height, Complex center, double zoom, int maxN
+    ) {
         super(width, height, BufferedImage.TYPE_INT_RGB);
-        array = new RepresentationValue[width][height];
+        this.array = array;
         this.center = center;
         this.zoom = zoom;
         this.maxN = maxN;
@@ -116,8 +123,9 @@ public class MandelbrotImage extends BufferedImage {
 
     // ColorFunction controls
 
-    public void setColorFunction(ColorFunction colorFunc) {
-        this.colorFunction = colorFunc;
+    public void setColorFunction(ColorFunctionType colorFunc) {
+        this.colorFuncType = colorFunc;
+        this.colorFunction = ColorFunction.of(colorFunc);
     }
 
     public void setColorFuncParams(ColorFunctionParameters colorFuncParams) {
@@ -138,6 +146,24 @@ public class MandelbrotImage extends BufferedImage {
 
     public void setMaxDistRendered(double maxDistRendered) {
         colorFuncParams.setMaxDistRendered(maxDistRendered);
+    }
+
+    /**
+     * For serialisation.
+     * @return a MandelbrotImageData object
+     */
+    public MandelbrotImageData data() {
+        return new MandelbrotImageData(getWidth(), getHeight(), center, zoom, maxN,
+                array, colorFuncType, colorFuncParams);
+    }
+
+    public static MandelbrotImage fromData(MandelbrotImageData data) {
+        MandelbrotImage image = new MandelbrotImage(data.array(), data.width(), data.height(),
+                data.center(), data.zoom(), data.maxN());
+        image.setColorFunction(data.colorFunction());
+        image.setColorFuncParams(data.colorFuncParams());
+        image.colorImage();
+        return image;
     }
 
 }

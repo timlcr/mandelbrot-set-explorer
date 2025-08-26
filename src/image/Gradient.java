@@ -1,6 +1,8 @@
 package image;
 
 import java.awt.Color;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -9,7 +11,11 @@ import java.util.function.Function;
  * An ArrayList of colours. Gradients can be constructed from a list of colour stops
  * (<code>Gradient.ColorStop</code>), or from a <code>Function< Float, Color ></code>
  */
-public class Gradient extends ArrayList<Color> {
+public class Gradient extends ArrayList<Color> implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+    private transient Function<Float, Color> f;
 
     public final String name;
     protected final List<Gradient.ColorStop> stops;
@@ -32,41 +38,20 @@ public class Gradient extends ArrayList<Color> {
      * @param name the name of the gradient
      * @param samples the number of samples taken, i.e. the size of the ArrayList
      * @param f a Function from floats between 0 and 1 to Colors
-     * @return the resulting gradient
      */
-    public static Gradient fromFunction(String name, int samples, Function<Float, Color> f) {
-        return new Gradient(name, samples, f) {
-
-            @Override
-            public Gradient resample(int samples) { return fromFunction(name, samples, f); }
-
-            @Override  protected Color get(float t) { return f.apply(t); }
-
-        };
-    }
-
-    protected Gradient(String name, int samples, Function<Float, Color> f) {
+    public Gradient(String name, int samples, Function<Float, Color> f) {
         this.name = name;
         this.stops = null;
         for(int i=0; i<samples; i++) { add(f.apply((float) i / samples)); }
     }
 
-    protected Gradient(String name, List<Color> colors) {
+    private Gradient(String name, List<Color> colors) {
         super(colors);
         this.name = name;
         this.stops = null;
     }
 
-    /**
-     * Resamples the gradient with the specified number of samples.
-     * @param samples the number of samples taken, i.e. the size of the ArrayList
-     * @return this gradient but with size <code>samples</code>
-     */
-    public Gradient resample(int samples) {
-        return new Gradient(name, samples, stops);
-    }
-
-    protected Color get(float t) {
+    private Color get(float t) {
         t %= 1f;
         for(int i=0; i<stops.size(); i++) {
             ColorStop sA = stops.get(i);
@@ -146,11 +131,11 @@ public class Gradient extends ArrayList<Color> {
             new ColorStop(Color.decode("#19547b"), 1)
     ));
 
-    public static final Gradient HUE = fromFunction("Hue", 256, t ->
+    public static final Gradient HUE = new Gradient("Hue", 256, t ->
             Color.getHSBColor(t, 1, 1));
 
 
-    public static final Gradient GREYSCALE = fromFunction("Grayscale", 256, t ->
+    public static final Gradient GREYSCALE = new Gradient("Grayscale", 256, t ->
             Color.getHSBColor(0, 0, 1-t));
 
     public static Gradient[] ALL = {HUE, RASTA, ARGON, KING_YNA, TERMINAL, JUPITER, GREYSCALE};

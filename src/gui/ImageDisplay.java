@@ -1,7 +1,7 @@
 package gui;
 
-import image.ColorFunction;
 import image.ColorFunctionParameters;
+import image.ColorFunctionType;
 import image.MandelbrotImage;
 import util.Complex;
 
@@ -27,7 +27,6 @@ public class ImageDisplay extends JPanel {
     public ImageDisplay(MandelbrotImage image) {
         super(new BorderLayout());
         this.image = image;
-        setBorder(BorderFactory.createLoweredBevelBorder());
 
         add(imageArea, BorderLayout.CENTER);
         imageArea.add(imagePanel, new GridBagConstraints());
@@ -50,6 +49,8 @@ public class ImageDisplay extends JPanel {
         imagePanel.revalidate();
         imagePanel.repaint();
     }
+
+    public MandelbrotImage image() { return image; }
 
     private JPanel imagePanel() {
         JPanel panel =  new JPanel() {
@@ -78,14 +79,16 @@ public class ImageDisplay extends JPanel {
         return panel;
     }
 
+
+
     MandelbrotImage image1 = MandelbrotImage.of(500, 500, new Complex(-0.7435731395744708, -0.11905172969043766), 3.70e-03, 2500,
-            ColorFunction.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
+            ColorFunctionType.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
 
     MandelbrotImage image2 = MandelbrotImage.of(750, 500, new Complex(0.3949217276354813, -0.14004692661352403), 2.18e-02, 1000,
-            ColorFunction.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
+            ColorFunctionType.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
 
     MandelbrotImage image3 = MandelbrotImage.of(500, 1000, Complex.DEFAULT_CENTER, 2.5, 100,
-            ColorFunction.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
+            ColorFunctionType.BLACK_AND_WHITE, ColorFunctionParameters.defaultParameters());
 
     private JButton image1button() {
         JButton button = new JButton("Image 1");

@@ -1,6 +1,7 @@
 package main;
 
 import gui.ImageDisplay;
+import gui.Workspace;
 
 import javax.swing.JFrame;
 import java.awt.Dimension;
@@ -10,7 +11,7 @@ public class Main {
         JFrame frame = new JFrame();
         frame.setMinimumSize(new Dimension(500, 500));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new ImageDisplay());
+        frame.add(new Workspace());
         frame.pack();
         frame.setVisible(true);
     }

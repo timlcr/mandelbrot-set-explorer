@@ -2,6 +2,9 @@ package algorithm;
 
 import util.Complex;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Record containing Mandelbrot Set related information about a point <code>c</code> on the complex plane. <p>
  *
@@ -20,5 +23,8 @@ import util.Complex;
  * @param orbitFound true if an orbit was detected while iterating the point associated with
  *                   this RepresentationValue
  */
-public record RepresentationValue(Complex lastZ, int escapeIter, double distEst, boolean orbitFound) {
+public record RepresentationValue(Complex lastZ, int escapeIter, double distEst, boolean orbitFound)
+implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 }
