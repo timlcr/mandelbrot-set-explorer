@@ -1,18 +1,12 @@
 package util;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 /**
  * A class representing a complex number with a real part and imaginary part.
  * Includes methods for complex arithmetic.
  * @param real the real part of the complex number
  * @param imaginary the imaginary part of the complex number
  */
-public record Complex(double real, double imaginary) implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public record Complex(double real, double imaginary) {
 
     public static final Complex ZERO = new Complex(0, 0);
     public static final Complex ONE = new Complex(1, 0);

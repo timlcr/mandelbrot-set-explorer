@@ -1,8 +1,5 @@
 package image;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 /**
  * Wrapper class for 4 parameters used by <code>ColorFunction</code> instances. <p>
  *
@@ -13,10 +10,7 @@ import java.io.Serializable;
  *
  * Has public getters and setters.
  */
-public class ColorFunctionParameters implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class ColorFunctionParameters {
 
     private Gradient gradient;
     private double flux;
