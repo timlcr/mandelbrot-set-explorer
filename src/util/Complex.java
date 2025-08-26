@@ -1,5 +1,7 @@
 package util;
 
+//TODO: these comments are cringe
+
 /**
  * A class representing a complex number with a real part and imaginary part.
  * Includes methods for complex arithmetic.

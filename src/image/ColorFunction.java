@@ -12,6 +12,7 @@ import java.util.function.BiFunction;
 public interface ColorFunction extends BiFunction<RepresentationValue, ColorFunctionParameters, Color> {
 
     /**
+     * Defines the ColorFunctions used by gui.
      * Returns a ColorFunction specified by the type.
      * @param type the type of ColorFunction being retrieved
      * @return a ColorFunction of the type <code>type</code>

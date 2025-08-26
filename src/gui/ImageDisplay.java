@@ -69,6 +69,11 @@ public class ImageDisplay extends JPanel {
                 g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
             }
 
+            /**
+             * Lets the image panel be the largest possible size while remaining inside the
+             * imageArea panel and maintaining the same aspect ratio of the image being displayed.
+             * @return the preferred size of this component as described above
+             */
             @Override
             public Dimension getPreferredSize() {
                 int w = imageArea.getWidth();
