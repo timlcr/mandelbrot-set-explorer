@@ -21,6 +21,7 @@ public class ColorFunctionParameters {
      * Constructor
      */
     public ColorFunctionParameters(Gradient gradient, double flux, boolean renderDistEst, double maxDistRendered) {
+        if (gradient == null) throw new NullPointerException("gradient is null");
         this.gradient = gradient;
         this.flux = flux;
         this.renderDistEst = renderDistEst;
@@ -32,7 +33,10 @@ public class ColorFunctionParameters {
     public boolean renderDistEst() { return renderDistEst; }
     public double maxDistRendered() { return maxDistRendered; }
 
-    public void setGradient(Gradient gradient) { this.gradient = gradient; }
+    public void setGradient(Gradient gradient) {
+        if (gradient == null) throw new NullPointerException("gradient is null");
+        this.gradient = gradient;
+    }
     public void setFlux(double flux) { this.flux = flux; }
     public void setRenderDistEst(boolean renderDistEst) { this.renderDistEst = renderDistEst; }
     public void setMaxDistRendered(double maxDistRendered) { this.maxDistRendered = maxDistRendered; }
