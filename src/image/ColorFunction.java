@@ -18,10 +18,23 @@ public interface ColorFunction extends BiFunction<RepresentationValue, ColorFunc
      * @return a ColorFunction of the type <code>type</code>
      */
     static ColorFunction of(ColorFunctionType type) {
-        return switch (type) {
+        ColorFunction cf = switch (type) {
             case BLACK_AND_WHITE -> (val, params) ->
                     val.escapeIter() < Integer.MAX_VALUE ? Color.WHITE : Color.BLACK;
         };
+
+        return (val, params) -> {
+            Color c = cf.apply(val, params);
+            if (!params.renderDistEst()) return c;
+            return applyDistanceEstimate(c, val.distEst(), params.maxDistRendered());
+        };
+    }
+
+    static Color applyDistanceEstimate(Color c, double distEst, double maxDistRendered) {
+        if(maxDistRendered <= 0 || distEst > maxDistRendered) return c;
+        float[] hsb = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
+        hsb[2] *= (float) (distEst / maxDistRendered);
+        return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
     }
 
 }
