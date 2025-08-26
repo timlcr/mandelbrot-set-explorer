@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class Workspace extends JPanel {
     public Workspace() {
         super(new BorderLayout());
 
-        imageDisplay.setBorder(BorderFactory.createLoweredBevelBorder());
+        imageDisplay.setBorder(imageDisplayBorder());
         add(imageDisplay, BorderLayout.CENTER);
 
         add(savePanel(), BorderLayout.SOUTH);
@@ -93,5 +94,11 @@ public class Workspace extends JPanel {
         panel.add(loadButton);
         panel.add(exportButton);
         return panel;
+    }
+
+    private Border imageDisplayBorder() {
+        Border empty = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+        Border bevel = BorderFactory.createLoweredBevelBorder();
+        return BorderFactory.createCompoundBorder(empty, bevel);
     }
 }
