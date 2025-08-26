@@ -20,6 +20,7 @@ import java.io.IOException;
 public class Workspace extends JPanel {
 
     private final ImageDisplay imageDisplay = new ImageDisplay();
+    private final ColorControls colorControls = new ColorControls(v -> imageDisplay.repaint(), null);
 
     private final JFileChooser fileChooser = new JFileChooser();
 
@@ -32,7 +33,7 @@ public class Workspace extends JPanel {
         imageDisplay.setBorder(imageDisplayBorder());
         add(imageDisplay, BorderLayout.CENTER);
 
-        add(savePanel(), BorderLayout.SOUTH);
+        add(buttonPanel(), BorderLayout.SOUTH);
     }
 
     /**
@@ -55,7 +56,7 @@ public class Workspace extends JPanel {
         fileChooser.setCurrentDirectory(dataDir);
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             MandelbrotImage image = MandelbrotImageIO.load(fileChooser.getSelectedFile());
-            imageDisplay.setImage(image);
+            setImage(image);
         }
     }
 
@@ -82,14 +83,22 @@ public class Workspace extends JPanel {
      */
     public MandelbrotImage image() { return imageDisplay.image(); }
 
-    private JPanel savePanel() {
+    private void setImage(MandelbrotImage image) {
+        imageDisplay.setImage(image);
+        colorControls.setImage(image);
+    }
+
+    private JPanel buttonPanel() {
+        JButton colorButton = new JButton("Colour");
         JButton saveButton = new JButton("Save project");
         JButton loadButton = new JButton("Load project");
         JButton exportButton = new JButton("Export image");
+        colorButton.addActionListener(e -> colorControls.setVisible(!colorControls.isVisible()));
         saveButton.addActionListener(e -> handleSave());
         loadButton.addActionListener(e -> handleLoad());
         exportButton.addActionListener(e -> handleExport());
         JPanel panel = new JPanel();
+        panel.add(colorButton);
         panel.add(saveButton);
         panel.add(loadButton);
         panel.add(exportButton);

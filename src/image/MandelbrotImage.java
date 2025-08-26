@@ -133,7 +133,6 @@ public class MandelbrotImage extends BufferedImage {
     public void setColorFunction(ColorFunctionType colorFunc) {
         this.colorFuncType = colorFunc;
         this.colorFunction = ColorFunction.of(colorFunc);
-        colorImage();
     }
 
     public void setColorFuncParams(ColorFunctionParameters colorFuncParams) {
