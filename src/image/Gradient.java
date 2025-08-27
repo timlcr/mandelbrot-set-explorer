@@ -18,7 +18,6 @@ public class Gradient extends ArrayList<Color> implements Serializable {
     private transient Function<Float, Color> f;
 
     public final String name;
-    protected final List<Gradient.ColorStop> stops;
 
     /**
      * Constructs a gradient which smoothly transitions between the provided colour stops.
@@ -29,8 +28,7 @@ public class Gradient extends ArrayList<Color> implements Serializable {
     public Gradient(String name, int samples, List<Gradient.ColorStop> stops) {
         if(stops.size() < 2) throw new IllegalArgumentException("Gradient must have at least 2 stops");
         this.name = name;
-        this.stops = stops;
-        for(int i = 0; i < samples; i++) { add(get((float) i / samples)); }
+        for(int i = 0; i < samples; i++) { add(get((float) i / samples, stops)); }
     }
 
     /**
@@ -41,17 +39,15 @@ public class Gradient extends ArrayList<Color> implements Serializable {
      */
     public Gradient(String name, int samples, Function<Float, Color> f) {
         this.name = name;
-        this.stops = null;
         for(int i=0; i<samples; i++) { add(f.apply((float) i / samples)); }
     }
 
     private Gradient(String name, List<Color> colors) {
         super(colors);
         this.name = name;
-        this.stops = null;
     }
 
-    private Color get(float t) {
+    private Color get(float t, List<ColorStop> stops) {
         t %= 1f;
         for(int i=0; i<stops.size(); i++) {
             ColorStop sA = stops.get(i);
