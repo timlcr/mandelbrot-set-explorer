@@ -5,4 +5,9 @@ package image;
  */
 public enum ColorFunctionType {
     BLACK_AND_WHITE,
+    DISCRETE_BANDS,
+    CONTINUOUS,
+    ODD_EVEN,
+    ESCAPE_DIRECTION,
+    DWELL_ANGLE_RADIUS
 }
