@@ -20,4 +20,17 @@ import util.Complex;
  * @param orbitFound true if an orbit was detected while iterating the point associated with
  *                   this RepresentationValue
  */
-public record RepresentationValue(Complex lastZ, int escapeIter, double distEst, boolean orbitFound) {}
+public record RepresentationValue(Complex lastZ, int escapeIter, double distEst, boolean orbitFound) {
+
+    /**
+     * Computes the 'smooth dwell value' which is sometimes used for colouring instead of
+     * <code>escapeIter</code> to give a smooth, gradual colour change in the image.
+     * @return the smooth dwell value
+     */
+    public double smoothDwell() {
+        double logZ = Math.log(lastZ().abs());
+        double nu = Math.log(logZ / Math.log(2)) / Math.log(2);
+        return Math.max(1, escapeIter + 1 - nu);
+    }
+
+}

@@ -8,7 +8,7 @@ import util.Complex;
  */
 public class Algorithm {
 
-    public static final double ESCAPE_RADIUS = 100d;
+    public static final double ESCAPE_RADIUS = 2d;
 
     /**
      * Runs the Mandelbrot Set algorithm on a complex point <code>c</code>.
