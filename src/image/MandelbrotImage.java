@@ -46,7 +46,7 @@ public class MandelbrotImage extends BufferedImage {
                 && colorFunc != null && colorFuncParams != null;
         if (!legal) throw new IllegalArgumentException();
         MandelbrotImage img = new MandelbrotImage(width, height, center, zoom, maxN);
-        img.colorFuncType = colorFunc;
+        img.setColorFunction(colorFunc);
         img.colorFuncParams = colorFuncParams;
         img.computeRepresentationValues();
         img.colorImage();

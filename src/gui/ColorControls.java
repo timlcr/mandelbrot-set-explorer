@@ -5,7 +5,6 @@ import image.ColorFunctionParameters;
 import image.ColorFunctionType;
 import image.Gradient;
 import image.MandelbrotImage;
-import util.Observer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -28,9 +27,9 @@ public class ColorControls extends JDialog {
     private final JRadioButton renderDistEstButton = new JRadioButton("Dist Est");
     private final ValueField<Double> maxDistEstField = ValueField.doubleField(0.01, 10);
 
-    private final Observer<Void> repainter;
+    private final Runnable repainter;
 
-    public ColorControls(Observer<Void> repainter, MandelbrotImage image) {
+    public ColorControls(Runnable repainter, MandelbrotImage image) {
         this.repainter = repainter;
         setTitle("Colour controls");
         setMinimumSize(new Dimension(200, 350));
@@ -52,23 +51,27 @@ public class ColorControls extends JDialog {
         maxDistEstField.setText(""+image.colorFuncParams().maxDistRendered());
     }
 
+
+    // Parameter getters
+
+    public ColorFunctionType getColorFunction() {
+        return colorFunctionSelector.get();
+    }
+
+    public ColorFunctionParameters getColorFuncParams() {
+        return new ColorFunctionParameters(
+                gradientSelector.get(), fluxField.get(),
+                renderDistEstButton.isSelected(), maxDistEstField.get()
+        );
+    }
+
+
     private void setDefaultValues() {
-        colorFunctionSelector.getModel().setSelectedItem(ColorFunction.of(ColorFunctionType.BLACK_AND_WHITE));
+        colorFunctionSelector.getModel().setSelectedItem(ColorFunctionType.BLACK_AND_WHITE);
         gradientSelector.getModel().setSelectedItem(Gradient.HUE);
         fluxField.setText(""+0.4);
         renderDistEstButton.setSelected(false);
         maxDistEstField.setText(""+0.01);
-    }
-
-    private void handleRecolor() {
-        if (image == null) return;
-        image.setColorFunction(colorFunctionSelector.get());
-        ColorFunctionParameters params = new ColorFunctionParameters(
-                gradientSelector.get(), fluxField.get(), renderDistEstButton.isSelected(), maxDistEstField.get()
-        );
-        image.setColorFuncParams(params);
-        image.colorImage();
-        repainter.update(null);
     }
 
     private JPanel controlsPanel() {
@@ -85,7 +88,7 @@ public class ColorControls extends JDialog {
 
     private void setupInputFields() {
         setLabels();
-        ActionListener al = e -> handleRecolor();
+        ActionListener al = e -> repainter.run();
         colorFunctionSelector.addActionListener(al);
         gradientSelector.addActionListener(al);
         fluxField.addActionListener(al);
@@ -94,7 +97,7 @@ public class ColorControls extends JDialog {
     }
 
     private void setLabels() {
-        Border empty = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+        Border empty = BorderFactory.createEmptyBorder();
         colorFunctionSelector.setBorder(BorderFactory.createTitledBorder(empty, "Colour function"));
         gradientSelector.setBorder(BorderFactory.createTitledBorder(empty, "Gradient"));
         fluxField.setBorder(BorderFactory.createTitledBorder(empty, "Flux"));
@@ -103,7 +106,7 @@ public class ColorControls extends JDialog {
 
     private JButton recolorButton() {
         JButton button = new JButton("Recolor");
-        button.addActionListener(e -> handleRecolor());
+        button.addActionListener(e -> repainter.run());
         return button;
     }
 

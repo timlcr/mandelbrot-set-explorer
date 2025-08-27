@@ -2,6 +2,7 @@ package gui;
 
 import image.MandelbrotImage;
 import persistence.MandelbrotImageIO;
+import util.Complex;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -20,7 +21,8 @@ import java.io.IOException;
 public class Workspace extends JPanel {
 
     private final ImageDisplay imageDisplay = new ImageDisplay();
-    private final ColorControls colorControls = new ColorControls(v -> imageDisplay.repaint(), null);
+    private final RenderControls renderControls = new RenderControls(this::handleRender, null);
+    private final ColorControls colorControls = new ColorControls(this::handleRecolor, null);
 
     private final JFileChooser fileChooser = new JFileChooser();
 
@@ -85,19 +87,41 @@ public class Workspace extends JPanel {
 
     private void setImage(MandelbrotImage image) {
         imageDisplay.setImage(image);
+        renderControls.setImage(image);
         colorControls.setImage(image);
     }
 
+    private void handleRender() {
+        Complex center = new Complex(renderControls.getCenterReal(), renderControls.getCenterImaginary());
+        MandelbrotImage image = MandelbrotImage.of(
+                renderControls.getImageWidth(), renderControls.getImageHeight(),
+                center, renderControls.getZoom(), renderControls.getMaxN(),
+                colorControls.getColorFunction(), colorControls.getColorFuncParams()
+        );
+        imageDisplay.setImage(image);
+    }
+
+    private void handleRecolor() {
+        if (image() == null) return;
+        image().setColorFunction(colorControls.getColorFunction());
+        image().setColorFuncParams(colorControls.getColorFuncParams());
+        image().colorImage();
+        imageDisplay.repaint();
+    }
+
     private JPanel buttonPanel() {
+        JButton renderButton = new JButton("Render");
         JButton colorButton = new JButton("Colour");
         JButton saveButton = new JButton("Save project");
         JButton loadButton = new JButton("Load project");
         JButton exportButton = new JButton("Export image");
-        colorButton.addActionListener(e -> colorControls.setVisible(!colorControls.isVisible()));
+        renderButton.addActionListener(e -> renderControls.setVisible(true));
+        colorButton.addActionListener(e -> colorControls.setVisible(true));
         saveButton.addActionListener(e -> handleSave());
         loadButton.addActionListener(e -> handleLoad());
         exportButton.addActionListener(e -> handleExport());
         JPanel panel = new JPanel();
+        panel.add(renderButton);
         panel.add(colorButton);
         panel.add(saveButton);
         panel.add(loadButton);
