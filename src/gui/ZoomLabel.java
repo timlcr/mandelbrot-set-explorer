@@ -36,6 +36,10 @@ public class ZoomLabel extends JLabel {
      * @param image the image from which the zoom info is to be displayed
      */
     public void update(MandelbrotImage image) {
+        if (image == null) {
+            setText("");
+            return;
+        }
         center = image.center;
         zoom = image.zoom;
         setText(center, zoom);

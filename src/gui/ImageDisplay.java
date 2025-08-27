@@ -2,7 +2,10 @@ package gui;
 
 import image.MandelbrotImage;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,6 +24,8 @@ public class ImageDisplay extends JPanel {
     private final JPanel imageArea = new JPanel(new GridBagLayout());
     private final JPanel imagePanel = imagePanel();
     private final ZoomLabel zoomLabel;
+
+    private final Border imageBorder = new LineBorder(Color.BLACK);
 
     /**
      * Constructor
@@ -48,6 +53,8 @@ public class ImageDisplay extends JPanel {
      */
     public void setImage(MandelbrotImage image) {
         this.image = image;
+        if (image != null) imagePanel.setBorder(imageBorder);
+        else imagePanel.setBorder(BorderFactory.createEmptyBorder());
         zoomLabel.update(image);
         imagePanel.revalidate();
         imagePanel.repaint();
@@ -60,7 +67,7 @@ public class ImageDisplay extends JPanel {
     public MandelbrotImage image() { return image; }
 
     private JPanel imagePanel() {
-        JPanel panel =  new JPanel() {
+        return  new JPanel() {
 
             @Override
             public void paintComponent(Graphics g) {
@@ -78,7 +85,7 @@ public class ImageDisplay extends JPanel {
             public Dimension getPreferredSize() {
                 int w = imageArea.getWidth();
                 int h = imageArea.getHeight();
-                if (image == null || w == 0 || h == 0) return super.getPreferredSize();
+                if (image == null || w == 0 || h == 0) return super.getSize();
                 double aspect = image.getWidth() / (double) image.getHeight();
                 if ((double) w / h > aspect) {
                     return new Dimension((int) (h * aspect), h);
@@ -87,8 +94,6 @@ public class ImageDisplay extends JPanel {
                 }
             }
         };
-        panel.setBorder(new LineBorder(Color.BLACK));
-        return panel;
     }
 
 }
