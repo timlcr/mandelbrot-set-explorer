@@ -28,9 +28,9 @@ public record RepresentationValue(Complex lastZ, int escapeIter, double distEst,
      * @return the smooth dwell value
      */
     public double smoothDwell() {
-        double logZ = Math.log(lastZ().abs());
-        double nu = Math.log(logZ / Math.log(2)) / Math.log(2);
-        return Math.max(1, escapeIter + 1 - nu);
+        if (escapeIter == Integer.MAX_VALUE) return escapeIter; // inside set
+        double logZn = Math.log(lastZ.abs());
+        return escapeIter + 1 - (Math.log(logZn) - Math.log(Math.log(Algorithm.ESCAPE_RADIUS))) / Math.log(2);
     }
 
 }
