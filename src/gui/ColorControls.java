@@ -23,9 +23,9 @@ public class ColorControls extends JDialog {
 
     private final Selector<ColorFunctionType> colorFunctionSelector = new Selector<>(ColorFunctionType.values());
     private final Selector<Gradient> gradientSelector = new Selector<>(Gradient.ALL);
-    private final ValueField<Double> fluxField = ValueField.doubleField(0.4, 7);
+    private final ValueField<Double> fluxField = ValueField.doubleField(5, 7);
     private final JRadioButton renderDistEstButton = new JRadioButton("Dist Est");
-    private final ValueField<Double> maxDistEstField = ValueField.doubleField(0.01, 10);
+    private final ValueField<Double> maxDistEstField = ValueField.doubleField(5e-3, 10);
 
     private final Runnable repainter;
 
@@ -89,11 +89,11 @@ public class ColorControls extends JDialog {
 
 
     private void setDefaultValues() {
-        colorFunctionSelector.getModel().setSelectedItem(ColorFunctionType.BLACK_AND_WHITE);
+        colorFunctionSelector.getModel().setSelectedItem(ColorFunctionType.CONTINUOUS);
         gradientSelector.getModel().setSelectedItem(Gradient.HUE);
-        fluxField.setText(""+0.4);
+        fluxField.setText(""+5);
         renderDistEstButton.setSelected(false);
-        maxDistEstField.setText(""+0.01);
+        maxDistEstField.setText(""+5e-3);
     }
 
     private JPanel controlsPanel() {
