@@ -11,6 +11,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
+/**
+ * A dialog containing input fields which control parameters used to render new
+ * MandelbrotImages.
+ */
 public class RenderControls extends JDialog {
 
     private final ValueField<Integer> widthField = ValueField.intField(500, 5);
@@ -22,6 +26,14 @@ public class RenderControls extends JDialog {
 
     private final Runnable imageRenderer;
 
+    /**
+     * Constructs a RenderControls dialog. The input fields can be initialised with parameters
+     * taken from a given image.
+     * @param imageRenderer generates an image using the parameters selected by the input fields
+     *                      and then displays it
+     * @param image The input fields will display parameters taken from this image. If null
+     *              they wil display the default values.
+     */
     public RenderControls(Runnable imageRenderer, MandelbrotImage image) {
         this.imageRenderer = imageRenderer;
         setTitle("Render Controls");
@@ -31,6 +43,11 @@ public class RenderControls extends JDialog {
         setLabels();
     }
 
+    /**
+     * Sets the input fields to display image generation parameters taken from
+     * a given image.
+     * @param image the image the parameters are from
+     */
     public void setImage(MandelbrotImage image) {
         if (image == null) {
             setDefaultValues();

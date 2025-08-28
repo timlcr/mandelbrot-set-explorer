@@ -31,6 +31,13 @@ public class ColorControls extends JDialog {
 
     private boolean disableActionListener = false;
 
+    /**
+     * Creates a ColorControls dialog. The input fields can be initialised with colouring
+     * parameters from a given image.
+     * @param repainter repaints the panel the image is displayed on
+     * @param image The input fields will display parameters taken from this image. If null
+     *              they wil display the default values.
+     */
     public ColorControls(Runnable repainter, MandelbrotImage image) {
         this.repainter = repainter;
         setTitle("Colour controls");
@@ -40,6 +47,11 @@ public class ColorControls extends JDialog {
         setupInputFields();
     }
 
+    /**
+     * Sets the input fields to display the colouring values of this image. If image is
+     * null the default values will be displayed.
+     * @param image the image the colouring values are from
+     */
     public void setImage(MandelbrotImage image) {
         disableActionListener = true;
         if (image == null) {
@@ -57,10 +69,17 @@ public class ColorControls extends JDialog {
 
     // Parameter getters
 
+    /**
+     * Returns the ColorFunctionType selected in the colour function selector.
+     */
     public ColorFunctionType getColorFunction() {
         return colorFunctionSelector.get();
     }
 
+    /**
+     * Returns a ColorFunctionParameters object containing the colour function parameters
+     * selected on this dialog.
+     */
     public ColorFunctionParameters getColorFuncParams() {
         return new ColorFunctionParameters(
                 gradientSelector.get(), fluxField.get(),
