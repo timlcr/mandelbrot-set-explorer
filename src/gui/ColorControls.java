@@ -16,9 +16,10 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
+/**
+ * A dialog box containing input fields to control the colouring of a displayed MandelbrotImage.
+ */
 public class ColorControls extends JDialog {
-
-    private MandelbrotImage image;
 
     private final Selector<ColorFunctionType> colorFunctionSelector = new Selector<>(ColorFunctionType.values());
     private final Selector<Gradient> gradientSelector = new Selector<>(Gradient.ALL);
@@ -41,7 +42,6 @@ public class ColorControls extends JDialog {
 
     public void setImage(MandelbrotImage image) {
         disableActionListener = true;
-        this.image = image;
         if (image == null) {
             setDefaultValues();
             return;
