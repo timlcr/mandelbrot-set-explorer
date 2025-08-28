@@ -56,13 +56,13 @@ public class ColorControls extends JDialog {
         disableActionListener = true;
         if (image == null) {
             setDefaultValues();
-            return;
+        } else {
+            colorFunctionSelector.getModel().setSelectedItem(image.colorFunctionType());
+            gradientSelector.getModel().setSelectedItem(image.colorFuncParams().gradient());
+            fluxField.setText("" + image.colorFuncParams().flux());
+            renderDistEstButton.setSelected(image.colorFuncParams().renderDistEst());
+            maxDistEstField.setText("" + image.colorFuncParams().maxDistRendered());
         }
-        colorFunctionSelector.getModel().setSelectedItem(image.colorFunctionType());
-        gradientSelector.getModel().setSelectedItem(image.colorFuncParams().gradient());
-        fluxField.setText(""+image.colorFuncParams().flux());
-        renderDistEstButton.setSelected(image.colorFuncParams().renderDistEst());
-        maxDistEstField.setText(""+image.colorFuncParams().maxDistRendered());
         disableActionListener = false;
     }
 
