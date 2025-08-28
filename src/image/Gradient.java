@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -25,39 +26,12 @@ public class Gradient extends ArrayList<Color> implements Serializable {
      * @param samples the number of samples taken, i.e. the size of the ArrayList
      * @param stops the colour stops
      */
-    public Gradient(String name, int samples, List<Gradient.ColorStop> stops) {
+    public Gradient(String name, int samples, List<ColorStop> stops, boolean mirror) {
         if(stops.size() < 2) throw new IllegalArgumentException("Gradient must have at least 2 stops");
         this.name = name;
         for(int i = 0; i < samples; i++) { add(get((float) i / samples, stops)); }
-    }
+        if (mirror) mirror(this);
 
-    /**
-     * Constructs a gradient from a function. The function maps floats between 0 and 1 to colours.
-     * @param name the name of the gradient
-     * @param samples the number of samples taken, i.e. the size of the ArrayList
-     * @param f a Function from floats between 0 and 1 to Colors
-     */
-    public Gradient(String name, int samples, Function<Float, Color> f) {
-        this.name = name;
-        for(int i=0; i<samples; i++) { add(f.apply((float) i / samples)); }
-    }
-
-    private Gradient(String name, List<Color> colors) {
-        super(colors);
-        this.name = name;
-    }
-
-    private Color get(float t, List<ColorStop> stops) {
-        t %= 1f;
-        for(int i=0; i<stops.size(); i++) {
-            ColorStop sA = stops.get(i);
-            ColorStop sB = stops.get(i + 1);
-            if(sA.position <= t && sB.position > t) {
-                t = (t - sA.position) / (sB.position - sA.position);
-                return interpolateRGB(sA.color(), sB.color(), t);
-            }
-        }
-        throw new RuntimeException("error");
     }
 
     /**
@@ -70,6 +44,23 @@ public class Gradient extends ArrayList<Color> implements Serializable {
             if(position < 0 || position > 1)
                 throw new IllegalArgumentException("position must be between 0 and 1");
         }
+    }
+
+    /**
+     * Constructs a gradient from a function. The function maps floats between 0 and 1 to colours.
+     * @param name the name of the gradient
+     * @param samples the number of samples taken, i.e. the size of the ArrayList
+     * @param f a Function from floats between 0 and 1 to Colors
+     */
+    public Gradient(String name, int samples, Function<Float, Color> f, boolean mirror) {
+        this.name = name;
+        for(int i=0; i<samples; i++) { add(f.apply((float) i / samples)); }
+        if (mirror) mirror(this);
+    }
+
+    private Gradient(String name, List<Color> colors) {
+        super(colors);
+        this.name = name;
     }
 
     /**
@@ -90,6 +81,23 @@ public class Gradient extends ArrayList<Color> implements Serializable {
 
     @Override public String toString() { return name; }
 
+    private Color get(float t, List<ColorStop> stops) {
+        t %= 1f;
+        for(int i=0; i<stops.size(); i++) {
+            ColorStop sA = stops.get(i);
+            ColorStop sB = stops.get(i + 1);
+            if(sA.position <= t && sB.position > t) {
+                t = (t - sA.position) / (sB.position - sA.position);
+                return interpolateRGB(sA.color(), sB.color(), t);
+            }
+        }
+        throw new RuntimeException("error");
+    }
+
+    public static void mirror(Gradient g) {
+        if (g.size() < 2) return;
+        for (int i = g.size() - 2; i >= 0; i--) { g.add(g.get(i)); }
+    }
 
     // Gradients
 
@@ -98,7 +106,7 @@ public class Gradient extends ArrayList<Color> implements Serializable {
             new ColorStop(Color.decode("#1E9600"), 0),
             new ColorStop(Color.decode("#FFF200"), 0.5f),
             new ColorStop(Color.decode("#FF0000"), 1)
-    ));
+    ), true);
 
     public static final Gradient ARGON = new Gradient(
             "Argon", 256, List.of(
@@ -106,33 +114,33 @@ public class Gradient extends ArrayList<Color> implements Serializable {
             new ColorStop(Color.decode("#EC38BC"), 0.33f),
             new ColorStop(Color.decode("#7303c0"), 0.66f),
             new ColorStop(Color.decode("#03001e"), 1f)
-    ));
+    ), true);
 
     public static final Gradient KING_YNA = new Gradient(
             "King Yna", 256, List.of(
             new ColorStop(Color.decode("#FDBB2D"), 0f),
             new ColorStop(Color.decode("#b21f1f"), 0.5f),
             new ColorStop(Color.decode("#1a2a6c"), 1f)
-    ));
+    ), true);
 
     public static final Gradient TERMINAL = new Gradient(
             "Terminal", 256, List.of(
             new ColorStop(Color.decode("#0f9b0f"), 0),
             new ColorStop(Color.decode("#000000"), 1)
-    ));
+    ), true);
 
     public static final Gradient JUPITER = new Gradient(
             "Jupiter", 256, List.of(
             new ColorStop(Color.decode("#ffd89b"), 0),
             new ColorStop(Color.decode("#19547b"), 1)
-    ));
+    ), true);
 
     public static final Gradient HUE = new Gradient("Hue", 256, t ->
-            Color.getHSBColor(t, 1, 1));
+            Color.getHSBColor(t, 1, 1), false);
 
 
     public static final Gradient GREYSCALE = new Gradient("Grayscale", 256, t ->
-            Color.getHSBColor(0, 0, 1-t));
+            Color.getHSBColor(0, 0, 1-t), true);
 
     public static Gradient[] ALL = {HUE, RASTA, ARGON, KING_YNA, TERMINAL, JUPITER, GREYSCALE};
 
