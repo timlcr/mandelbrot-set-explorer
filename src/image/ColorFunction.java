@@ -20,17 +20,16 @@ public interface ColorFunction extends BiFunction<RepresentationValue, ColorFunc
     static ColorFunction of(ColorFunctionType type) {
         ColorFunction cf = switch (type) {
             case BLACK_AND_WHITE -> (val, params) ->
-                    val.escapeIter() < Integer.MAX_VALUE ? Color.WHITE : Color.BLACK;
+                    val.escapeIter() == Integer.MAX_VALUE ? Color.BLACK : Color.WHITE;
             case DISCRETE_BANDS -> (val, params) -> {
                 Gradient grad = params.gradient();
-                int index = (int) (Math.log(val.escapeIter()) * params.flux() * grad.size());
-                index %= grad.size();
+                int index = (int) (val.escapeIter() * params.flux()) % grad.size();
                 return grad.get(index);
             };
             case CONTINUOUS -> (val, params) -> {
                 Gradient grad = params.gradient();
-                double index = (Math.log(val.smoothDwell()) * params.flux() * grad.size());
-                index %= grad.size();
+                double dwell = val.smoothDwell() * params.flux();
+                double index = dwell % grad.size();
                 int i0 = (int) Math.floor(index);
                 int i1 = (i0 + 1) % grad.size();
                 float t = (float) (index - i0);
@@ -38,24 +37,37 @@ public interface ColorFunction extends BiFunction<RepresentationValue, ColorFunc
             };
             case ODD_EVEN -> (val, params) -> {
                 Gradient grad = params.gradient();
-                int index = (int) (Math.log(val.escapeIter()) * params.flux() * grad.size());
-                index %= grad.size();
-                Color c = grad.get(index);
-                float[] hsb = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
-                if(val.escapeIter() % 2 == 0) hsb[1] *= 0.67f;
+                int index = (int) (val.escapeIter() * params.flux()) % grad.size();
+                Color base = grad.get(index);
+
+                float[] hsb = Color.RGBtoHSB(base.getRed(), base.getGreen(), base.getBlue(), null);
+                if (val.escapeIter() % 2 == 0) {
+                    hsb[1] *= 0.67f; // dampen saturation on even bands
+                }
                 return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
             };
             case ESCAPE_DIRECTION -> (val, params) -> {
-                Color c = of(ColorFunctionType.ODD_EVEN).apply(val, params);
-                float[] hsb = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
-                float h = hsb[0];
-                if(val.lastZ().angle() < 0) h = (h + 0.025f) % 1f;
-                return Color.getHSBColor(h, hsb[1], hsb[2]);
+                Color base = of(ColorFunctionType.ODD_EVEN).apply(val, params);
+                float[] hsb = Color.RGBtoHSB(base.getRed(), base.getGreen(), base.getBlue(), null);
+
+                double angle = val.lastZ().angle(); // in radians
+                if (angle < 0) {
+                    hsb[0] = (hsb[0] + 0.025f) % 1f; // hue shift
+                }
+                return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
             };
             case DWELL_ANGLE_RADIUS -> (val, params) -> {
-                float h = (float) (Math.log(val.smoothDwell()) * params.flux());
-                float s = (float) (val.lastZ().angle() / (2 * Math.PI) + 1);
-                float b = (float) (Math.log(val.lastZ().abs()) % 1); // log may need changing
+                // Hue from continuous dwell
+                float h = (float) ((val.smoothDwell() * params.flux()) % 1.0);
+
+                // Saturation from normalized angle
+                double angle = val.lastZ().angle(); // [-π, π]
+                float s = (float) ((angle / (2 * Math.PI) + 0.5) % 1.0);
+
+                // Brightness from radius, using log scaling for stability
+                double r = val.lastZ().abs();
+                float b = (float) ((Math.log1p(r) / 10.0) % 1.0);
+
                 return Color.getHSBColor(h, s, b);
             };
         };
