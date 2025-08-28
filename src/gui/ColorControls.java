@@ -1,6 +1,5 @@
 package gui;
 
-import image.ColorFunction;
 import image.ColorFunctionParameters;
 import image.ColorFunctionType;
 import image.Gradient;
@@ -29,6 +28,8 @@ public class ColorControls extends JDialog {
 
     private final Runnable repainter;
 
+    private boolean disableActionListener = false;
+
     public ColorControls(Runnable repainter, MandelbrotImage image) {
         this.repainter = repainter;
         setTitle("Colour controls");
@@ -39,6 +40,7 @@ public class ColorControls extends JDialog {
     }
 
     public void setImage(MandelbrotImage image) {
+        disableActionListener = true;
         this.image = image;
         if (image == null) {
             setDefaultValues();
@@ -49,6 +51,7 @@ public class ColorControls extends JDialog {
         fluxField.setText(""+image.colorFuncParams().flux());
         renderDistEstButton.setSelected(image.colorFuncParams().renderDistEst());
         maxDistEstField.setText(""+image.colorFuncParams().maxDistRendered());
+        disableActionListener = false;
     }
 
 
@@ -88,7 +91,9 @@ public class ColorControls extends JDialog {
 
     private void setupInputFields() {
         setLabels();
-        ActionListener al = e -> repainter.run();
+        ActionListener al = e -> {
+            if (!disableActionListener) repainter.run();
+        };
         colorFunctionSelector.addActionListener(al);
         gradientSelector.addActionListener(al);
         fluxField.addActionListener(al);
