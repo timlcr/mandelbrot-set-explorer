@@ -18,7 +18,7 @@ public class GUI extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Explorer", new Explorer());
-        tabbedPane.addTab("Studio", new ImageStudio());
+        tabbedPane.addTab("Studio", new Studio());
         add(tabbedPane);
 
         pack();
