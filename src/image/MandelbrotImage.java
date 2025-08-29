@@ -14,15 +14,15 @@ import java.awt.image.BufferedImage;
  */
 public class MandelbrotImage extends BufferedImage {
 
-    private final RepresentationValue[][] array;
+    protected final RepresentationValue[][] array;
 
     public final Complex center;
     public final double zoom;
     public final int maxN;
 
-    private ColorFunctionType colorFuncType;
-    private ColorFunction colorFunction;
-    private ColorFunctionParameters colorFuncParams;
+    protected ColorFunctionType colorFuncType;
+    protected ColorFunction colorFunction;
+    protected ColorFunctionParameters colorFuncParams;
 
     /**
      * Creates a MandelbrotImage with the specified dimensions, centred on the specified
@@ -70,7 +70,7 @@ public class MandelbrotImage extends BufferedImage {
      * Private constructor for creating a MandelbrotImage with
      * its RepresentationValue array already initialised.
      */
-    private MandelbrotImage(
+    protected MandelbrotImage(
             RepresentationValue[][] array, int width, int height, Complex center, double zoom, int maxN
     ) {
         super(width, height, BufferedImage.TYPE_INT_RGB);
@@ -87,8 +87,7 @@ public class MandelbrotImage extends BufferedImage {
     protected void computeRepresentationValues() {
         for(int x = 0; x < getWidth(); x++) {
             for(int y = 0; y < getHeight(); y++) {
-                Complex c = numAt(x, y);
-                array[x][y] = Algorithm.run(c, c, maxN);
+                evaluate(x, y);
             }
         }
     }
@@ -180,6 +179,11 @@ public class MandelbrotImage extends BufferedImage {
         image.setColorFuncParams(data.colorFuncParams());
         image.colorImage();
         return image;
+    }
+
+    protected void evaluate(int x, int y) {
+        Complex c = numAt(x, y);
+        array[x][y] = Algorithm.run(c, c, maxN);
     }
 
 }
