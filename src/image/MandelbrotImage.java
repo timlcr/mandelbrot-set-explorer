@@ -138,22 +138,6 @@ public class MandelbrotImage extends BufferedImage {
         this.colorFuncParams = colorFuncParams;
     }
 
-    public void setGradient(Gradient gradient) {
-        colorFuncParams.setGradient(gradient);
-    }
-
-    public void setFlux(double flux) {
-        colorFuncParams.setFlux(flux);
-    }
-
-    public void setRenderDistEst(boolean renderDistEst) {
-        colorFuncParams.setRenderDistEst(renderDistEst);
-    }
-
-    public void setMaxDistRendered(double maxDistRendered) {
-        colorFuncParams.setMaxDistRendered(maxDistRendered);
-    }
-
 
     public ColorFunctionType colorFunctionType() { return colorFuncType; }
     public ColorFunctionParameters colorFuncParams() { return colorFuncParams; }
