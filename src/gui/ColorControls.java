@@ -24,8 +24,8 @@ public class ColorControls extends JDialog {
     private final Selector<ColorFunctionType> colorFunctionSelector = new Selector<>(ColorFunctionType.values());
     private final Selector<Gradient> gradientSelector = new Selector<>(Gradient.ALL);
     private final ValueField<Double> fluxField = ValueField.doubleField(5, 7);
-    private final JRadioButton renderDistEstButton = new JRadioButton("Dist Est");
-    private final ValueField<Double> maxDistEstField = ValueField.doubleField(5e-3, 10);
+    private final JRadioButton showFilament = new JRadioButton("Show filament");
+    private final ValueField<Double> filamentSizeField = ValueField.doubleField(0.002, 10);
 
     private final Runnable repainter;
 
@@ -60,8 +60,8 @@ public class ColorControls extends JDialog {
             colorFunctionSelector.getModel().setSelectedItem(image.colorFunctionType());
             gradientSelector.getModel().setSelectedItem(image.colorFuncParams().gradient());
             fluxField.setText("" + image.colorFuncParams().flux());
-            renderDistEstButton.setSelected(image.colorFuncParams().renderDistEst());
-            maxDistEstField.setText("" + image.colorFuncParams().maxDistRendered());
+            showFilament.setSelected(image.colorFuncParams().renderDistEst());
+            filamentSizeField.setText("" + image.getFilamentSize());
         }
         disableActionListener = false;
     }
@@ -80,10 +80,10 @@ public class ColorControls extends JDialog {
      * Returns a ColorFunctionParameters object containing the colour function parameters
      * selected on this dialog.
      */
-    public ColorFunctionParameters getColorFuncParams() {
+    public ColorFunctionParameters getColorFuncParams(double zoom) {
         return new ColorFunctionParameters(
                 gradientSelector.get(), fluxField.get(),
-                renderDistEstButton.isSelected(), maxDistEstField.get()
+                showFilament.isSelected(), filamentSizeField.get() * zoom
         );
     }
 
@@ -92,8 +92,8 @@ public class ColorControls extends JDialog {
         colorFunctionSelector.getModel().setSelectedItem(ColorFunctionType.CONTINUOUS);
         gradientSelector.getModel().setSelectedItem(Gradient.HUE);
         fluxField.setText(""+5);
-        renderDistEstButton.setSelected(false);
-        maxDistEstField.setText(""+5e-3);
+        showFilament.setSelected(false);
+        filamentSizeField.setText(""+0.002);
     }
 
     private JPanel controlsPanel() {
@@ -101,8 +101,8 @@ public class ColorControls extends JDialog {
         panel.add(colorFunctionSelector);
         panel.add(gradientSelector);
         panel.add(fluxField);
-        panel.add(renderDistEstButton);
-        panel.add(maxDistEstField);
+        panel.add(showFilament);
+        panel.add(filamentSizeField);
         panel.add(recolorButton());
         panel.add(hideButton());
         return panel;
@@ -116,8 +116,8 @@ public class ColorControls extends JDialog {
         colorFunctionSelector.addActionListener(al);
         gradientSelector.addActionListener(al);
         fluxField.addActionListener(al);
-        renderDistEstButton.addActionListener(al);
-        maxDistEstField.addActionListener(al);
+        showFilament.addActionListener(al);
+        filamentSizeField.addActionListener(al);
     }
 
     private void setLabels() {
@@ -125,7 +125,7 @@ public class ColorControls extends JDialog {
         colorFunctionSelector.setBorder(BorderFactory.createTitledBorder(empty, "Colour function"));
         gradientSelector.setBorder(BorderFactory.createTitledBorder(empty, "Gradient"));
         fluxField.setBorder(BorderFactory.createTitledBorder(empty, "Flux"));
-        maxDistEstField.setBorder(BorderFactory.createTitledBorder(empty, "Max distance estimate rendered"));
+        filamentSizeField.setBorder(BorderFactory.createTitledBorder(empty, "Filament size"));
     }
 
     private JButton recolorButton() {

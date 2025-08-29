@@ -29,18 +29,24 @@ public class Explorer extends JPanel {
 
         reset();
     }
+    
+    public MandelbrotImage image() {
+        return display.image();
+    }
 
     private void reset() {
-        MandelbrotImage base = MandelbrotImage.of(500, 500, Complex.DEFAULT_CENTER, 3, 1000,
-                colorControls.getColorFunction(), colorControls.getColorFuncParams());
+        double defaultZoom = 3;
+        MandelbrotImage base = MandelbrotImage.of(500, 500, Complex.DEFAULT_CENTER, defaultZoom, 1000,
+                colorControls.getColorFunction(), colorControls.getColorFuncParams(defaultZoom));
         display.setImage(base);
         display.repaint();
     }
 
     private void handleRecolor() {
-        display.image().setColorFunction(colorControls.getColorFunction());
-        display.image().setColorFuncParams(colorControls.getColorFuncParams());
-        display.image().colorImage();
+        MandelbrotImage image = image();
+        image.setColorFunction(colorControls.getColorFunction());
+        image.setColorFuncParams(colorControls.getColorFuncParams(image.zoom));
+        image.colorImage();
         display.repaint();
     }
 

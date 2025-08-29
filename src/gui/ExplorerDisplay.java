@@ -58,6 +58,7 @@ public class ExplorerDisplay extends ImageDisplay {
             SuccessiveMandelbrotImage nextImage = new SuccessiveMandelbrotImage(
                     center, zoom, 1000, image.colorFunctionType(), image.colorFuncParams()
             );
+            nextImage.setFilamentSize(image.getFilamentSize());
             setImage(nextImage);
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override

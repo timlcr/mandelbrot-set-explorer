@@ -91,19 +91,21 @@ public class ImageStudio extends JPanel {
 
     private void handleRender() {
         Complex center = new Complex(renderControls.getCenterReal(), renderControls.getCenterImaginary());
+        double zoom = renderControls.getZoom();
         MandelbrotImage image = MandelbrotImage.of(
                 renderControls.getImageWidth(), renderControls.getImageHeight(),
-                center, renderControls.getZoom(), renderControls.getMaxN(),
-                colorControls.getColorFunction(), colorControls.getColorFuncParams()
+                center, zoom, renderControls.getMaxN(),
+                colorControls.getColorFunction(), colorControls.getColorFuncParams(zoom)
         );
         imageDisplay.setImage(image);
     }
 
     private void handleRecolor() {
-        if (image() == null) return;
-        image().setColorFunction(colorControls.getColorFunction());
-        image().setColorFuncParams(colorControls.getColorFuncParams());
-        image().colorImage();
+        MandelbrotImage image = image();
+        if (image == null) return;
+        image.setColorFunction(colorControls.getColorFunction());
+        image.setColorFuncParams(colorControls.getColorFuncParams(image.zoom));
+        image.colorImage();
         imageDisplay.repaint();
     }
 

@@ -126,6 +126,24 @@ public class MandelbrotImage extends BufferedImage {
         return new Complex(real, imag);
     }
 
+    /**
+     * Sets the filament size of this image. Following this operation the maxDistRendered colour
+     * property will be <code>filamentSize * zoom</code>.
+     * @param filamentSize the new filament size
+     */
+    public void setFilamentSize(double filamentSize) {
+        if (filamentSize >= 1) throw new IllegalArgumentException("Filament size must be less than 1");
+        colorFuncParams.setMaxDistRendered(filamentSize * zoom);
+    }
+
+    /**
+     * Returns the filament size of this MandelbrotImage
+     * @return the filament size of this MandelbrotImage
+     */
+    public double getFilamentSize() {
+        return colorFuncParams.maxDistRendered() / zoom;
+    }
+
 
     // ColorFunction controls
 
