@@ -18,7 +18,7 @@ import java.io.IOException;
 /**
  * A component with the ability to create MandelbrotImages, display them, and load and save them.
  */
-public class Workspace extends JPanel {
+public class ImageStudio extends JPanel {
 
     private final ImageDisplay imageDisplay = new ImageDisplay();
     private final RenderControls renderControls = new RenderControls(this::handleRender, null);
@@ -29,7 +29,7 @@ public class Workspace extends JPanel {
     /**
      * Constructs a Workspace
      */
-    public Workspace() {
+    public ImageStudio() {
         super(new BorderLayout());
 
         imageDisplay.setBorder(imageDisplayBorder());
