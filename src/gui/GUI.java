@@ -1,7 +1,9 @@
 package gui;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
+import javax.swing.border.Border;
 import java.awt.Dimension;
 
 /**
@@ -21,6 +23,12 @@ public class GUI extends JFrame {
 
         pack();
         setVisible(true);
+    }
+
+    static Border imageDisplayBorder() {
+        Border empty = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+        Border bevel = BorderFactory.createLoweredBevelBorder();
+        return BorderFactory.createCompoundBorder(empty, bevel);
     }
 
 }

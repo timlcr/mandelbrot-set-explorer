@@ -5,12 +5,10 @@ import persistence.MandelbrotImageIO;
 import util.Complex;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +30,7 @@ public class ImageStudio extends JPanel {
     public ImageStudio() {
         super(new BorderLayout());
 
-        imageDisplay.setBorder(imageDisplayBorder());
+        imageDisplay.setBorder(GUI.imageDisplayBorder());
         add(imageDisplay, BorderLayout.CENTER);
 
         add(buttonPanel(), BorderLayout.SOUTH);
@@ -129,9 +127,4 @@ public class ImageStudio extends JPanel {
         return panel;
     }
 
-    private Border imageDisplayBorder() {
-        Border empty = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-        Border bevel = BorderFactory.createLoweredBevelBorder();
-        return BorderFactory.createCompoundBorder(empty, bevel);
-    }
 }

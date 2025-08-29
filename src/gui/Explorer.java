@@ -21,8 +21,12 @@ public class Explorer extends JPanel {
      */
     public Explorer() {
         super(new BorderLayout());
+
+        display.setBorder(GUI.imageDisplayBorder());
         add(display, BorderLayout.CENTER);
+
         add(buttonPanel(), BorderLayout.SOUTH);
+
         reset();
     }
 
