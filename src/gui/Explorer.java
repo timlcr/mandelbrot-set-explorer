@@ -16,11 +16,14 @@ public class Explorer extends JPanel {
     private final ExplorerDisplay display = new ExplorerDisplay();
     private final ColorControls colorControls = new ColorControls(this::handleRecolor, null);
 
+    private final Runnable sendCoords;
+
     /**
      * Constructs an Explorer gui
      */
-    public Explorer() {
+    public Explorer(Runnable sendCoords) {
         super(new BorderLayout());
+        this.sendCoords = sendCoords;
 
         display.setBorder(GUI.imageDisplayBorder());
         add(display, BorderLayout.CENTER);
@@ -32,6 +35,10 @@ public class Explorer extends JPanel {
     
     public MandelbrotImage image() {
         return display.image();
+    }
+
+    public void colorControlsVisible(boolean visible) {
+        colorControls.setVisible(visible);
     }
 
     private void reset() {
@@ -50,14 +57,19 @@ public class Explorer extends JPanel {
         display.repaint();
     }
 
+
+
     private JPanel buttonPanel() {
         JPanel buttonPanel = new JPanel();
         JButton resetButton = new JButton("Reset");
         JButton colorButton = new JButton("Color");
+        JButton sendCoordsButton = new JButton("Send coordinates to Studio");
         resetButton.addActionListener(e -> reset());
         colorButton.addActionListener(e -> colorControls.setVisible(true));
+        sendCoordsButton.addActionListener(e -> sendCoords.run());
         buttonPanel.add(resetButton);
         buttonPanel.add(colorButton);
+        buttonPanel.add(sendCoordsButton);
         return buttonPanel;
     }
 

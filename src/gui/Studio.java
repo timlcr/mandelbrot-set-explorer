@@ -83,6 +83,14 @@ public class Studio extends JPanel {
      */
     public MandelbrotImage image() { return imageDisplay.image(); }
 
+    public void renderControlsVisible(boolean visible) {
+        renderControls.setVisible(visible);
+    }
+
+    public void colorControlsVisible(boolean visible) {
+        colorControls.setVisible(visible);
+    }
+
     private void setImage(MandelbrotImage image) {
         imageDisplay.setImage(image);
         renderControls.setImage(image);
@@ -107,6 +115,10 @@ public class Studio extends JPanel {
         image.setColorFuncParams(colorControls.getColorFuncParams(image.zoom));
         image.colorImage();
         imageDisplay.repaint();
+    }
+
+    void setZoomCoords(Complex center, double zoom) {
+        renderControls.setZoomCoords(center, zoom);
     }
 
     private JPanel buttonPanel() {

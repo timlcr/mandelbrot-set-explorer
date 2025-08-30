@@ -1,6 +1,7 @@
 package gui;
 
 import image.MandelbrotImage;
+import util.Complex;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -55,10 +56,14 @@ public class RenderControls extends JDialog {
         }
         widthField.setText("" + image.getWidth());
         heightField.setText("" + image.getHeight());
-        centerRealField.setText("" + image.center.real());
-        centerImagField.setText("" + image.center.imaginary());
-        zoomField.setText("" + image.zoom);
+        setZoomCoords(image.center, image.zoom);
         maxNField.setText("" + image.maxN);
+    }
+
+    public void setZoomCoords(Complex center, double zoom) {
+        centerRealField.setText("" + center.real());
+        centerImagField.setText("" + center.imaginary());
+        zoomField.setText("" + zoom);
     }
 
 
