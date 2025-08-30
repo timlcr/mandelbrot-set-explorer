@@ -6,6 +6,7 @@ import persistence.MandelbrotImageData;
 import util.Complex;
 
 import java.awt.image.BufferedImage;
+import java.util.function.Consumer;
 
 /**
  * A visual representation of the Mandelbrot Set stored in a BufferedImage object.
@@ -24,6 +25,8 @@ public class MandelbrotImage extends BufferedImage {
     protected ColorFunction colorFunction;
     protected ColorFunctionParameters colorFuncParams;
 
+    private Consumer<Double> progressObserver;
+
     /**
      * Creates a MandelbrotImage with the specified dimensions, centred on the specified
      * window of the complex plane, generated using the specified maximum number of iterations, and
@@ -36,21 +39,19 @@ public class MandelbrotImage extends BufferedImage {
      * @param maxN the maximum number of iterations allowed when running the algorithm on each point
      * @param colorFunc the ColorFunction used to determine the colour of each pixel
      * @param colorFuncParams the parameters used by <code>colorFunction</code>
-     * @return An image of the Mandelbrot Set
      */
-    public static MandelbrotImage of(
+    public MandelbrotImage(
             int width, int height, Complex center, double zoom, int maxN,
             ColorFunctionType colorFunc, ColorFunctionParameters colorFuncParams
     ) {
+        this(width, height, center, zoom, maxN);
         boolean legal = width > 0 && height > 0 && center != null && zoom > 0 && maxN >= 0
                 && colorFunc != null && colorFuncParams != null;
         if (!legal) throw new IllegalArgumentException();
-        MandelbrotImage img = new MandelbrotImage(width, height, center, zoom, maxN);
-        img.setColorFunction(colorFunc);
-        img.colorFuncParams = colorFuncParams;
-        img.computeRepresentationValues();
-        img.colorImage();
-        return img;
+        setColorFunction(colorFunc);
+        setColorFuncParams(colorFuncParams);
+        computeRepresentationValues();
+        colorImage();
     }
 
     /**
