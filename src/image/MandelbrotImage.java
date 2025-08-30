@@ -45,11 +45,27 @@ public class MandelbrotImage extends BufferedImage {
             ColorFunctionType colorFunc, ColorFunctionParameters colorFuncParams
     ) {
         this(width, height, center, zoom, maxN);
-        boolean legal = width > 0 && height > 0 && center != null && zoom > 0 && maxN >= 0
-                && colorFunc != null && colorFuncParams != null;
-        if (!legal) throw new IllegalArgumentException();
+        assertArgumentsLegal(width, height, center, zoom, maxN, colorFunc, colorFuncParams);
         setColorFunction(colorFunc);
         setColorFuncParams(colorFuncParams);
+        computeRepresentationValues();
+        colorImage();
+    }
+
+    /**
+     * Creates a mandelbrot image using the specified parameters, with a progress observer
+     * reporting image generation progress.
+     */
+    public MandelbrotImage(
+            int width, int height, Complex center, double zoom, int maxN,
+            ColorFunctionType colorFunc, ColorFunctionParameters colorFuncParams,
+            Consumer<Double> progressObserver
+    ) {
+        this(width, height, center, zoom, maxN);
+        assertArgumentsLegal(width, height, center, zoom, maxN, colorFunc, colorFuncParams);
+        setColorFunction(colorFunc);
+        setColorFuncParams(colorFuncParams);
+        this.progressObserver = progressObserver;
         computeRepresentationValues();
         colorImage();
     }
@@ -86,10 +102,12 @@ public class MandelbrotImage extends BufferedImage {
      * <code>c</code> which corresponds to a pixel in the image.
      */
     protected void computeRepresentationValues() {
+        boolean updateProgress = progressObserver != null;
         for(int x = 0; x < getWidth(); x++) {
             for(int y = 0; y < getHeight(); y++) {
                 evaluate(x, y);
             }
+            if(updateProgress) progressObserver.accept((double) x / getWidth());
         }
     }
 
@@ -187,6 +205,15 @@ public class MandelbrotImage extends BufferedImage {
     protected void evaluate(int x, int y) {
         Complex c = numAt(x, y);
         array[x][y] = Algorithm.run(c, c, maxN);
+    }
+
+    private void assertArgumentsLegal(
+            int width, int height, Complex center, double zoom, int maxN,
+            ColorFunctionType colorFunc, ColorFunctionParameters colorFuncParams
+    ) {
+        boolean legal = width > 0 && height > 0 && center != null && zoom > 0 && maxN > 0
+                && colorFunc != null && colorFuncParams != null;
+        if (!legal) throw new IllegalArgumentException();
     }
 
 }
