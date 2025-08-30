@@ -5,6 +5,7 @@ import algorithm.RepresentationValue;
 import persistence.MandelbrotImageData;
 import util.Complex;
 
+import javax.swing.SwingUtilities;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
@@ -54,7 +55,7 @@ public class MandelbrotImage extends BufferedImage {
 
     /**
      * Creates a mandelbrot image using the specified parameters, with a progress observer
-     * reporting image generation progress.
+     * reporting image generation progress as a double value from 0 to 1.
      */
     public MandelbrotImage(
             int width, int height, Complex center, double zoom, int maxN,
@@ -107,7 +108,9 @@ public class MandelbrotImage extends BufferedImage {
             for(int y = 0; y < getHeight(); y++) {
                 evaluate(x, y);
             }
-            if(updateProgress) progressObserver.accept((double) x / getWidth());
+            if(updateProgress && x % 5 == 0) {
+                progressObserver.accept((double) x / getWidth());
+            }
         }
     }
 

@@ -9,9 +9,12 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 /**
  * A component with the ability to create MandelbrotImages, display them, and load and save them.
@@ -23,6 +26,7 @@ public class Studio extends JPanel {
     private final ColorControls colorControls = new ColorControls(this::handleRecolor, null);
 
     private final JFileChooser fileChooser = new JFileChooser();
+    private final JProgressBar progressBar = new JProgressBar();
 
     /**
      * Constructs a Workspace
@@ -33,7 +37,7 @@ public class Studio extends JPanel {
         imageDisplay.setBorder(GUI.imageDisplayBorder());
         add(imageDisplay, BorderLayout.CENTER);
 
-        add(buttonPanel(), BorderLayout.SOUTH);
+        add(bottomPanel(), BorderLayout.SOUTH);
     }
 
     /**
@@ -100,12 +104,25 @@ public class Studio extends JPanel {
     private void handleRender() {
         Complex center = new Complex(renderControls.getCenterReal(), renderControls.getCenterImaginary());
         double zoom = renderControls.getZoom();
-        MandelbrotImage image = MandelbrotImage.of(
-                renderControls.getImageWidth(), renderControls.getImageHeight(),
-                center, zoom, renderControls.getMaxN(),
-                colorControls.getColorFunction(), colorControls.getColorFuncParams(zoom)
-        );
-        imageDisplay.setImage(image);
+        Consumer<Double> progressObserver = p -> progressBar.setValue((int) (p * 100));
+        SwingWorker<MandelbrotImage, Void> worker = new SwingWorker<>() {
+            @Override
+            protected MandelbrotImage doInBackground() throws Exception {
+                return new MandelbrotImage(
+                        renderControls.getImageWidth(), renderControls.getImageHeight(),
+                        center, zoom, renderControls.getMaxN(),
+                        colorControls.getColorFunction(), colorControls.getColorFuncParams(zoom),
+                        progressObserver
+                );
+            }
+            @Override
+            protected void done() {
+                try {
+                    imageDisplay.setImage(get());
+                } catch (Exception ignore) {}
+            }
+        };
+        worker.execute();
     }
 
     private void handleRecolor() {
@@ -119,6 +136,13 @@ public class Studio extends JPanel {
 
     void setZoomCoords(Complex center, double zoom) {
         renderControls.setZoomCoords(center, zoom);
+    }
+
+    private JPanel bottomPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(progressBar, BorderLayout.NORTH);
+        panel.add(buttonPanel(), BorderLayout.SOUTH);
+        return panel;
     }
 
     private JPanel buttonPanel() {
