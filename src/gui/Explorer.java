@@ -43,7 +43,7 @@ public class Explorer extends JPanel {
 
     private void reset() {
         double defaultZoom = 3;
-        MandelbrotImage base = MandelbrotImage.of(500, 500, Complex.DEFAULT_CENTER, defaultZoom, 1000,
+        MandelbrotImage base = new MandelbrotImage(500, 500, Complex.DEFAULT_CENTER, defaultZoom, 1000,
                 colorControls.getColorFunction(), colorControls.getColorFuncParams(defaultZoom));
         display.setImage(base);
         display.repaint();

@@ -55,8 +55,10 @@ public class ExplorerDisplay extends ImageDisplay {
          * @param zoom the zoom level of the next image
          */
         private void nextImage(Complex center, double zoom) {
+            int maxN = 1000;
+            if (zoom < 2e-4) maxN = 2000;
             SuccessiveMandelbrotImage nextImage = new SuccessiveMandelbrotImage(
-                    center, zoom, 1000, image.colorFunctionType(), image.colorFuncParams()
+                    center, zoom, maxN, image.colorFunctionType(), image.colorFuncParams()
             );
             nextImage.setFilamentSize(image.getFilamentSize());
             setImage(nextImage);
