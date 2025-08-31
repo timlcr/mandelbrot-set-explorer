@@ -3,10 +3,12 @@ package gui;
 import image.MandelbrotImage;
 import util.Complex;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Stack;
@@ -17,10 +19,14 @@ import java.util.Stack;
  */
 public class Explorer extends JPanel {
 
+    public static final Color COLOR = new Color(250, 165, 45);
+
     private final Stack<MandelbrotImage> imageCache = new Stack<>();
 
     private final ExplorerDisplay display = new ExplorerDisplay(imageCache);
-    private final ColorControls colorControls = new ColorControls(this::handleRecolor, null);
+    private final ColorControls colorControls = new ColorControls(
+            this::handleRecolor, "Explorer colour controls", COLOR, null
+    );
 
     private final Runnable sendCoords;
 
@@ -86,6 +92,8 @@ public class Explorer extends JPanel {
         sendCoordsButton.addActionListener(e -> sendCoords.run());
 
         JPanel buttonPanel = new JPanel(new GridBagLayout());
+        buttonPanel.setBorder(BorderFactory.createRaisedBevelBorder());
+        buttonPanel.setBackground(COLOR);
         GridBagConstraints c = new GridBagConstraints();
 
         c.gridx = 0;

@@ -8,7 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
@@ -17,6 +19,8 @@ import java.awt.GridLayout;
  * MandelbrotImages.
  */
 public class RenderControls extends JDialog {
+
+    private final Color color;
 
     private final ValueField<Integer> widthField = ValueField.intField(500, 5);
     private final ValueField<Integer> heightField = ValueField.intField(500, 5);
@@ -35,13 +39,13 @@ public class RenderControls extends JDialog {
      * @param image The input fields will display parameters taken from this image. If null
      *              they wil display the default values.
      */
-    public RenderControls(Runnable imageRenderer, MandelbrotImage image) {
+    public RenderControls(Runnable imageRenderer, String title, Color color, MandelbrotImage image) {
         this.imageRenderer = imageRenderer;
-        setTitle("Render Controls");
-        setMinimumSize(new Dimension(200, 350));
+        this.color = color;
+        setTitle(title);
+        setMinimumSize(new Dimension(250, 350));
         add(controlsPanel(), BorderLayout.CENTER);
         setImage(image);
-        setLabels();
     }
 
     /**
@@ -89,25 +93,22 @@ public class RenderControls extends JDialog {
     private JPanel controlsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1));
-        panel.add(widthField);
-        panel.add(heightField);
-        panel.add(centerRealField);
-        panel.add(centerImagField);
-        panel.add(zoomField);
-        panel.add(maxNField);
+        panel.add(GUI.titledComponent(widthField, "Width"));
+        panel.add(GUI.titledComponent(heightField, "Height"));
+        panel.add(GUI.titledComponent(centerRealField, "Center real part"));
+        panel.add(GUI.titledComponent(centerImagField, "Center imaginary part"));
+        panel.add(GUI.titledComponent(zoomField, "Zoom"));
+        panel.add(GUI.titledComponent(maxNField, "Max N"));
         panel.add(renderButton());
         panel.add(hideButton());
-        return panel;
-    }
-
-    private void setLabels() {
-        Border empty = BorderFactory.createEmptyBorder();
-        widthField.setBorder(BorderFactory.createTitledBorder(empty, "Image width"));
-        heightField.setBorder(BorderFactory.createTitledBorder(empty, "Image height"));
-        centerRealField.setBorder(BorderFactory.createTitledBorder(empty, "Center real"));
-        centerImagField.setBorder(BorderFactory.createTitledBorder(empty, "Center imag"));
-        zoomField.setBorder(BorderFactory.createTitledBorder(empty, "Zoom level"));
-        maxNField.setBorder(BorderFactory.createTitledBorder(empty, "Max N"));
+        JPanel border = new JPanel(new GridLayout());
+        Border b = BorderFactory.createCompoundBorder(
+                new EmptyBorder(10, 10, 10, 10), BorderFactory.createLoweredBevelBorder()
+        );
+        border.setBorder(b);
+        border.setBackground(color);
+        border.add(panel);
+        return border;
     }
 
     private JButton renderButton() {

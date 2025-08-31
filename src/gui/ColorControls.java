@@ -11,7 +11,9 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -21,10 +23,12 @@ import java.awt.event.ActionListener;
  */
 public class ColorControls extends JDialog {
 
+    private final Color color;
+
     private final Selector<ColorFunctionType> colorFunctionSelector = new Selector<>(ColorFunctionType.values());
     private final Selector<Gradient> gradientSelector = new Selector<>(Gradient.ALL);
     private final ValueField<Double> fluxField = ValueField.doubleField(5, 7);
-    private final JRadioButton showFilament = new JRadioButton("Show filament");
+    private final JRadioButton showFilamentButton = new JRadioButton("Show filament");
     private final ValueField<Double> filamentSizeField = ValueField.doubleField(0.002, 10);
 
     private final Runnable repainter;
@@ -38,13 +42,14 @@ public class ColorControls extends JDialog {
      * @param image The input fields will display parameters taken from this image. If null
      *              they wil display the default values.
      */
-    public ColorControls(Runnable repainter, MandelbrotImage image) {
+    public ColorControls(Runnable repainter, String title, Color color, MandelbrotImage image) {
         this.repainter = repainter;
-        setTitle("Colour controls");
-        setMinimumSize(new Dimension(200, 350));
+        this.color = color;
+        setTitle(title);
+        setMinimumSize(new Dimension(250, 350));
         add(controlsPanel(), BorderLayout.CENTER);
         setImage(image);
-        setupInputFields();
+        setActionListener();
     }
 
     /**
@@ -60,7 +65,7 @@ public class ColorControls extends JDialog {
             colorFunctionSelector.getModel().setSelectedItem(image.colorFunctionType());
             gradientSelector.getModel().setSelectedItem(image.colorFuncParams().gradient());
             fluxField.setText("" + image.colorFuncParams().flux());
-            showFilament.setSelected(image.colorFuncParams().renderDistEst());
+            showFilamentButton.setSelected(image.colorFuncParams().renderDistEst());
             filamentSizeField.setText("" + image.getFilamentSize());
         }
         disableActionListener = false;
@@ -83,7 +88,7 @@ public class ColorControls extends JDialog {
     public ColorFunctionParameters getColorFuncParams(double zoom) {
         return new ColorFunctionParameters(
                 gradientSelector.get(), fluxField.get(),
-                showFilament.isSelected(), filamentSizeField.get() * zoom
+                showFilamentButton.isSelected(), filamentSizeField.get() * zoom
         );
     }
 
@@ -92,40 +97,38 @@ public class ColorControls extends JDialog {
         colorFunctionSelector.getModel().setSelectedItem(ColorFunctionType.CONTINUOUS);
         gradientSelector.getModel().setSelectedItem(Gradient.HUE);
         fluxField.setText(""+5);
-        showFilament.setSelected(false);
+        showFilamentButton.setSelected(false);
         filamentSizeField.setText(""+0.002);
     }
 
     private JPanel controlsPanel() {
         JPanel panel = new JPanel(new GridLayout(0, 1));
-        panel.add(colorFunctionSelector);
-        panel.add(gradientSelector);
-        panel.add(fluxField);
-        panel.add(showFilament);
-        panel.add(filamentSizeField);
+        panel.add(GUI.titledComponent(colorFunctionSelector, "Color function"));
+        panel.add(GUI.titledComponent(gradientSelector, "Gradient"));
+        panel.add(GUI.titledComponent(fluxField, "Flux"));
+        panel.add(showFilamentButton);
+        panel.add(GUI.titledComponent(filamentSizeField, "Filament size"));
         panel.add(recolorButton());
         panel.add(hideButton());
-        return panel;
+        JPanel border = new JPanel(new GridLayout());
+        Border b = BorderFactory.createCompoundBorder(
+                new EmptyBorder(10, 10, 10, 10), BorderFactory.createLoweredBevelBorder()
+        );
+        border.setBorder(b);
+        border.setBackground(color);
+        border.add(panel);
+        return border;
     }
 
-    private void setupInputFields() {
-        setLabels();
+    private void setActionListener() {
         ActionListener al = e -> {
             if (!disableActionListener) repainter.run();
         };
         colorFunctionSelector.addActionListener(al);
         gradientSelector.addActionListener(al);
         fluxField.addActionListener(al);
-        showFilament.addActionListener(al);
+        showFilamentButton.addActionListener(al);
         filamentSizeField.addActionListener(al);
-    }
-
-    private void setLabels() {
-        Border empty = BorderFactory.createEmptyBorder();
-        colorFunctionSelector.setBorder(BorderFactory.createTitledBorder(empty, "Colour function"));
-        gradientSelector.setBorder(BorderFactory.createTitledBorder(empty, "Gradient"));
-        fluxField.setBorder(BorderFactory.createTitledBorder(empty, "Flux"));
-        filamentSizeField.setBorder(BorderFactory.createTitledBorder(empty, "Filament size"));
     }
 
     private JButton recolorButton() {

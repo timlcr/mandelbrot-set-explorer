@@ -5,6 +5,7 @@ import persistence.MandelbrotImageIO;
 import util.Complex;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -13,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
@@ -24,9 +26,15 @@ import java.util.function.Consumer;
  */
 public class Studio extends JPanel {
 
+    public static final Color COLOR = new Color(45, 185, 250);
+
     private final ImageDisplay imageDisplay = new ImageDisplay();
-    private final RenderControls renderControls = new RenderControls(this::handleRender, null);
-    private final ColorControls colorControls = new ColorControls(this::handleRecolor, null);
+    private final RenderControls renderControls = new RenderControls(
+            this::handleRender, "Studio render controls", COLOR, null
+    );
+    private final ColorControls colorControls = new ColorControls(
+            this::handleRecolor, "Studio colour controls", COLOR, null
+    );
 
     private final JFileChooser fileChooser = new JFileChooser();
     private final JProgressBar progressBar = new JProgressBar();
@@ -161,6 +169,8 @@ public class Studio extends JPanel {
         exportButton.addActionListener(e -> handleExport());
 
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createRaisedBevelBorder());
+        panel.setBackground(COLOR);
         GridBagConstraints c = new GridBagConstraints();
 
         c.gridx = 0;

@@ -4,12 +4,13 @@ import image.MandelbrotImage;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 
 /**
  * The root component of the GUI. Uses a tabbed pane to switch between an <code>Explorer</code>
@@ -39,6 +40,14 @@ public class GUI extends JFrame {
         Border empty = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         Border bevel = BorderFactory.createLoweredBevelBorder();
         return BorderFactory.createCompoundBorder(empty, bevel);
+    }
+
+    static JPanel titledComponent(Component c, String title) {
+        JPanel panel = new JPanel(new GridLayout());
+        panel.add(c);
+        Border empty = BorderFactory.createEmptyBorder();
+        panel.setBorder(BorderFactory.createTitledBorder(empty, title));
+        return panel;
     }
 
     private void sendExplorerCoordsToStudio() {
