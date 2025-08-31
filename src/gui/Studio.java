@@ -5,6 +5,7 @@ import persistence.MandelbrotImageIO;
 import util.Complex;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -12,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.File;
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -146,8 +149,8 @@ public class Studio extends JPanel {
     }
 
     private JPanel buttonPanel() {
-        JButton renderButton = new JButton("Render");
-        JButton colorButton = new JButton("Colour");
+        JButton renderButton = new JButton("Render controls");
+        JButton colorButton = new JButton("Colour controls");
         JButton saveButton = new JButton("Save project");
         JButton loadButton = new JButton("Load project");
         JButton exportButton = new JButton("Export image");
@@ -156,12 +159,37 @@ public class Studio extends JPanel {
         saveButton.addActionListener(e -> handleSave());
         loadButton.addActionListener(e -> handleLoad());
         exportButton.addActionListener(e -> handleExport());
-        JPanel panel = new JPanel();
-        panel.add(renderButton);
-        panel.add(colorButton);
-        panel.add(saveButton);
-        panel.add(loadButton);
-        panel.add(exportButton);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridx = 0;
+        c.gridy = 0;
+        panel.add(renderButton, c);
+
+        c.gridy = 1;
+        panel.add(colorButton, c);
+
+        c.gridx = 1;
+        c.gridy = 0;
+        c.gridheight = 2;
+        panel.add(Box.createHorizontalStrut(50), c);
+
+        c.gridheight = 1;
+        c.gridx = 2;
+        panel.add(saveButton, c);
+
+        c.gridy = 1;
+        panel.add(loadButton, c);
+
+        c.gridx = 3;
+        c.gridy = 0;
+        c.gridheight = 2;
+        panel.add(Box.createHorizontalStrut(20), c);
+
+        c.gridx = 4;
+        panel.add(exportButton, c);
+
         return panel;
     }
 

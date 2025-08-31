@@ -3,9 +3,12 @@ package gui;
 import image.MandelbrotImage;
 import util.Complex;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Stack;
 
 /**
@@ -73,19 +76,41 @@ public class Explorer extends JPanel {
 
 
     private JPanel buttonPanel() {
-        JPanel buttonPanel = new JPanel();
         JButton resetButton = new JButton("Reset");
-        JButton previousButton = new JButton("Show previous zoom");
-        JButton colorButton = new JButton("Color");
+        JButton previousButton = new JButton("Previous zoom");
+        JButton colorButton = new JButton("Colour controls");
         JButton sendCoordsButton = new JButton("Send coordinates to Studio");
         resetButton.addActionListener(e -> reset());
         previousButton.addActionListener(e -> showPreviousImage());
         colorButton.addActionListener(e -> colorControls.setVisible(true));
         sendCoordsButton.addActionListener(e -> sendCoords.run());
-        buttonPanel.add(resetButton);
-        buttonPanel.add(previousButton);
-        buttonPanel.add(colorButton);
-        buttonPanel.add(sendCoordsButton);
+
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.ipadx = previousButton.getPreferredSize().width - resetButton.getPreferredSize().width;
+        buttonPanel.add(resetButton, c);
+
+        c.ipadx = 0;
+        c.gridy = 1;
+        buttonPanel.add(previousButton, c);
+
+        c.gridx = 1;
+        c.gridy = 0;
+        c.gridheight = 2;
+        buttonPanel.add(Box.createHorizontalStrut(25), c);
+
+        c.gridx = 2;
+        buttonPanel.add(colorButton, c);
+
+        c.gridx = 3;
+        buttonPanel.add(Box.createHorizontalStrut(25), c);
+
+        c.gridx = 4;
+        buttonPanel.add(sendCoordsButton, c);
+
         return buttonPanel;
     }
 
