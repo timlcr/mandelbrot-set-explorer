@@ -5,8 +5,10 @@ import algorithm.RepresentationValue;
 import persistence.MandelbrotImageData;
 import util.Complex;
 
-import javax.swing.SwingUtilities;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -51,6 +53,20 @@ public class MandelbrotImage extends BufferedImage {
         setColorFuncParams(colorFuncParams);
         computeRepresentationValues();
         colorImage();
+    }
+
+    public static MandelbrotImage generateImageParallel(
+            int width, int height, Complex center, double zoom, int maxN,
+            ColorFunctionType colorFunc, ColorFunctionParameters colorFuncParams,
+            Consumer<Double> progressObserver
+    ) {
+        assertArgumentsLegal(width, height, center, zoom, maxN, colorFunc, colorFuncParams);
+        MandelbrotImage image = new MandelbrotImage(width, height, center, zoom, maxN);
+        image.setColorFunction(colorFunc);
+        image.setColorFuncParams(colorFuncParams);
+        image.multiCoreCompute();
+        image.colorImage();
+        return image;
     }
 
     /**
@@ -113,6 +129,35 @@ public class MandelbrotImage extends BufferedImage {
             }
         }
     }
+
+    protected void multiCoreCompute() {
+        int cores = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newFixedThreadPool(cores);
+        System.out.println(cores);
+
+        boolean updateProgress = progressObserver != null;
+
+        for (int x = 0; x < getWidth(); x++) {
+            final int column = x; // must be effectively final for lambda
+            executor.submit(() -> {
+                for (int y = 0; y < getHeight(); y++) {
+                    evaluate(column, y);
+                }
+            });
+
+            if (updateProgress && x % 5 == 0) {
+                progressObserver.accept((double) x / getWidth());
+            }
+        }
+
+        executor.shutdown();
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
 
     /**
      * Colours the image by using the colorFunction with inputs from the RepresentationValue array
@@ -210,7 +255,7 @@ public class MandelbrotImage extends BufferedImage {
         array[x][y] = Algorithm.run(c, c, maxN);
     }
 
-    private void assertArgumentsLegal(
+    private static void assertArgumentsLegal(
             int width, int height, Complex center, double zoom, int maxN,
             ColorFunctionType colorFunc, ColorFunctionParameters colorFuncParams
     ) {
