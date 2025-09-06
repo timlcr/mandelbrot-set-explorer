@@ -13,8 +13,11 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+// TODO: think about putting ImagePanel in its own file
 
 /**
  * Displays a MandelbrotImage, and information about the location of the zoom.
@@ -83,6 +86,11 @@ public class ImageDisplay extends JPanel {
      */
     public class ImagePanel extends JPanel {
 
+        private int selectionRectX;
+        private int selectionRectY;
+        private int selectionRectWidth;
+        private int selectionRectHeight;
+
         /**
          * Computes the value of the complex point corresponding to the pixel at
          * <code>(x, y)</code>
@@ -105,6 +113,7 @@ public class ImageDisplay extends JPanel {
             super.paintComponent(g);
             if (image == null) return;
             g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+            drawSelectionRect(g);
         }
 
         /**
@@ -123,6 +132,26 @@ public class ImageDisplay extends JPanel {
             } else {
                 return new Dimension(w, (int) (w / aspect));
             }
+        }
+
+        /**
+         * Sets the size and position of the selection rectangle which gets drawn over the image
+         * @param x rectangle x coord
+         * @param y rectangle y coord
+         * @param width rectangle width
+         * @param height rectangle height
+         */
+        public void setSelectionRect(int x, int y, int width, int height) {
+            selectionRectX = x;
+            selectionRectY = y;
+            selectionRectWidth = width;
+            selectionRectHeight = height;
+        }
+
+        private void drawSelectionRect(Graphics g) {
+            if (selectionRectWidth == 0 || selectionRectHeight == 0) return;
+            g.setColor(Color.RED);
+            g.drawRect(selectionRectX, selectionRectY, selectionRectWidth, selectionRectHeight);
         }
 
     }

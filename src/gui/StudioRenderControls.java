@@ -40,14 +40,13 @@ public class StudioRenderControls extends JDialog {
      *              they wil display the default values.
      */
     public StudioRenderControls(
-            Runnable imageRenderer, String title, Color color, JButton selectViewButton,
-            MandelbrotImage image
+            Runnable imageRenderer, String title, Color color, MandelbrotImage image
     ) {
         this.imageRenderer = imageRenderer;
         this.color = color;
         setTitle(title);
         setMinimumSize(new Dimension(250, 400));
-        add(controlsPanel(selectViewButton), BorderLayout.CENTER);
+        add(controlsPanel(), BorderLayout.CENTER);
         setImage(image);
     }
 
@@ -68,16 +67,8 @@ public class StudioRenderControls extends JDialog {
     }
 
     public void setZoomCoords(Complex center, double zoom) {
-        setCenter(center);
-        setZoomLevel(zoom);
-    }
-
-    public void setCenter(Complex center) {
         centerRealField.setText("" + center.real());
         centerImagField.setText("" + center.imaginary());
-    }
-
-    public void setZoomLevel(double zoom) {
         zoomField.setText("" + zoom);
     }
 
@@ -101,7 +92,7 @@ public class StudioRenderControls extends JDialog {
         maxNField.setText("" + 100);
     }
 
-    private JPanel controlsPanel(JButton selectViewButton) {
+    private JPanel controlsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1));
         panel.add(GUI.titledComponent(widthField, "Width"));
@@ -110,7 +101,6 @@ public class StudioRenderControls extends JDialog {
         panel.add(GUI.titledComponent(centerImagField, "Center imaginary part"));
         panel.add(GUI.titledComponent(zoomField, "Zoom"));
         panel.add(GUI.titledComponent(maxNField, "Max N"));
-        panel.add(selectViewButton);
         panel.add(renderButton());
         panel.add(hideButton());
         JPanel border = new JPanel(new GridLayout());

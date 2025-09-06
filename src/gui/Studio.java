@@ -27,25 +27,24 @@ import java.util.function.Consumer;
 public class Studio extends JPanel {
 
     public static final Color COLOR = new Color(45, 185, 250);
-    public static final Color SELECTED_BUTTON_COLOR = new Color(147, 198, 237);
 
     private final JFileChooser fileChooser = new JFileChooser();
     private final JProgressBar progressBar = new JProgressBar();
-    private final JButton selectViewButton = selectViewButton();
 
     public final StudioRenderControls renderControls = new StudioRenderControls(
-            this::handleRender, "Studio render controls", COLOR, selectViewButton, null
+            this::handleRender, "Studio render controls", COLOR, null
     );
     public  final ColorControls colorControls = new ColorControls(
             this::handleRecolor, "Studio colour controls", COLOR, null
     );
-    private final StudioDisplay display = new StudioDisplay(this);
+    private final ImageDisplay display = new ImageDisplay();
 
     /**
      * Constructs a Workspace
      */
     public Studio() {
         super(new BorderLayout());
+        new SubzoomSelector(display.imagePanel, this::setZoomCoords);
 
         display.setBorder(GUI.imageDisplayBorder());
         add(display, BorderLayout.CENTER);
@@ -147,17 +146,6 @@ public class Studio extends JPanel {
         display.repaint();
     }
 
-    private void handleSelectView() {
-        display.setSelectingView(true);
-        selectViewButton.setBackground(SELECTED_BUTTON_COLOR);
-        selectViewButton.setText("Cancel");
-    }
-
-    public void handleCancelSelectView() {
-        selectViewButton.setBackground(Color.WHITE);
-        selectViewButton.setText("Select view");
-    }
-
     void setZoomCoords(Complex center, double zoom) {
         renderControls.setZoomCoords(center, zoom);
     }
@@ -214,18 +202,6 @@ public class Studio extends JPanel {
         panel.add(exportButton, c);
 
         return panel;
-    }
-
-    private JButton selectViewButton() {
-        JButton button = new JButton("Select view");
-        button.addActionListener(e -> {
-            if (!display.selectingView()) handleSelectView();
-            else {
-                display.setSelectingView(false);
-                handleCancelSelectView();
-            }
-        });
-        return button;
     }
 
 }
