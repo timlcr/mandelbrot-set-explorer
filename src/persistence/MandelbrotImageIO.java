@@ -7,7 +7,7 @@ import image.Gradient;
 import image.MandelbrotImage;
 import util.Complex;
 
-import javax.swing.JFileChooser;
+import java.awt.Color;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -15,8 +15,11 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -115,5 +118,64 @@ public class MandelbrotImageIO {
             return MandelbrotImage.fromData(imageData);
         } catch (Exception e) { throw new RuntimeException("Error loading image data", e); }
     }
+
+    /*public static void writeGradient(Gradient gradient, DataOutputStream dos) throws IOException {
+        dos.writeInt(gradient.name.length());
+        dos.writeChars(gradient.name);
+        if (gradient.colorStops != null) {
+            dos.writeBoolean(true);
+            writeColorStopGradient(gradient, dos);
+        } else {
+            dos.writeBoolean(false);
+            writeWholeGradient(gradient, dos);
+        }
+    }
+
+    public static Gradient readGradient(DataInputStream dis) throws IOException {
+        StringBuilder name = new StringBuilder();
+        int nameLength = dis.readInt();
+        for (int i = 0; i < nameLength; i++) {
+            name.append(dis.readChar());
+        }
+        boolean colorStops = dis.readBoolean();
+        if (colorStops) return readColorStopsGradient(dis);
+        else return readWholeGradient(dis);
+    }
+
+    private static void writeColorStopGradient(Gradient gradient, DataOutputStream dos) throws IOException{
+        if (gradient.colorStops == null) throw new IllegalArgumentException("Incompatible gradient");
+        dos.writeInt(gradient.colorStops.size());
+        for (Gradient.ColorStop s : gradient.colorStops) {
+            writeColor(s.color(), dos);
+            dos.writeFloat(s.position());
+        }
+    }
+
+    private static Gradient readColorStopsGradient(String name, DataInputStream dis) throws IOException {
+        List<Gradient.ColorStop> stops = new ArrayList<>();
+        int n = dis.readInt();
+        for (int i = 0; i < n; i++) {
+            Color c = readColor(dis);
+            float f = dis.readFloat();
+            stops.add(new Gradient.ColorStop(c, f));
+        }
+        return new Gradient(name, stops, )
+    }
+
+    private static void writeWholeGradient(Gradient gradient, DataOutputStream dos) throws IOException {
+        dos.writeInt(gradient.size());
+        for (int i = 0; i < gradient.size(); i++) {
+            writeColor(gradient.get(i), dos);
+        }
+    }
+
+    private static void writeColor(Color color, DataOutputStream dos) throws IOException {
+            int rgb = color.getRGB();
+            dos.writeInt(rgb);
+    }
+
+    private static Color readColor(DataInputStream dis) throws IOException {
+        return new Color(dis.readInt());
+    }*/
 
 }
