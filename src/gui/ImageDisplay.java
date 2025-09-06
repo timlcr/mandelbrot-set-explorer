@@ -6,7 +6,6 @@ import util.Complex;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,6 +13,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Displays a MandelbrotImage, and information about the location of the zoom.
@@ -67,6 +68,8 @@ public class ImageDisplay extends JPanel {
      */
     public MandelbrotImage image() { return image; }
 
+    public ImagePanel getImagePanel() { return imagePanel; }
+
     /**
      * Creates the ImagePanel to be used by this ImageDisplay.
      * @return the ImagePanel to be used by this ImageDisplay
@@ -78,7 +81,7 @@ public class ImageDisplay extends JPanel {
      * size while remaining inside the imageArea panel, and maintaining the aspect ratio of the image
      * being displayed.
      */
-    protected class ImagePanel extends JPanel {
+    public class ImagePanel extends JPanel {
 
         /**
          * Computes the value of the complex point corresponding to the pixel at
@@ -87,7 +90,7 @@ public class ImageDisplay extends JPanel {
          * @param y the y coordinate of the chosen pixel
          * @return the value of the complex point corresponding to the pixel at
          * <code>(x, y)</code>
-         */
+         */ // TODO: rewrite this method to find the indices to call image.numAt
         public Complex numAt(int x, int y) {
             double realRange = image.zoom / getHeight() * getWidth();
             double minReal = image.center.real() - realRange / 2d;
