@@ -27,17 +27,19 @@ import java.util.function.Consumer;
 public class Studio extends JPanel {
 
     public static final Color COLOR = new Color(45, 185, 250);
-
-    private final ImageDisplay imageDisplay = new ImageDisplay();
-    private final RenderControls renderControls = new RenderControls(
-            this::handleRender, "Studio render controls", COLOR, null
-    );
-    private final ColorControls colorControls = new ColorControls(
-            this::handleRecolor, "Studio colour controls", COLOR, null
-    );
+    public static final Color SELECTED_BUTTON_COLOR = new Color(147, 198, 237);
 
     private final JFileChooser fileChooser = new JFileChooser();
     private final JProgressBar progressBar = new JProgressBar();
+    private final JButton selectViewButton = selectViewButton();
+
+    public final StudioRenderControls renderControls = new StudioRenderControls(
+            this::handleRender, "Studio render controls", COLOR, selectViewButton, null
+    );
+    public  final ColorControls colorControls = new ColorControls(
+            this::handleRecolor, "Studio colour controls", COLOR, null
+    );
+    private final StudioDisplay display = new StudioDisplay(this);
 
     /**
      * Constructs a Workspace
@@ -45,8 +47,8 @@ public class Studio extends JPanel {
     public Studio() {
         super(new BorderLayout());
 
-        imageDisplay.setBorder(GUI.imageDisplayBorder());
-        add(imageDisplay, BorderLayout.CENTER);
+        display.setBorder(GUI.imageDisplayBorder());
+        add(display, BorderLayout.CENTER);
 
         add(bottomPanel(), BorderLayout.SOUTH);
     }
@@ -96,7 +98,7 @@ public class Studio extends JPanel {
      * Returns the image being displayed.
      * @return the image being displayed
      */
-    public MandelbrotImage image() { return imageDisplay.image(); }
+    public MandelbrotImage image() { return display.image(); }
 
     public void renderControlsVisible(boolean visible) {
         renderControls.setVisible(visible);
@@ -107,7 +109,7 @@ public class Studio extends JPanel {
     }
 
     private void setImage(MandelbrotImage image) {
-        imageDisplay.setImage(image);
+        display.setImage(image);
         renderControls.setImage(image);
         colorControls.setImage(image);
     }
@@ -118,7 +120,7 @@ public class Studio extends JPanel {
         Consumer<Double> progressObserver = p -> progressBar.setValue((int) (p * 100));
         SwingWorker<MandelbrotImage, Void> worker = new SwingWorker<>() {
             @Override
-            protected MandelbrotImage doInBackground() throws Exception {
+            protected MandelbrotImage doInBackground() {
                 return new MandelbrotImage(
                         renderControls.getImageWidth(), renderControls.getImageHeight(),
                         center, zoom, renderControls.getMaxN(),
@@ -129,7 +131,7 @@ public class Studio extends JPanel {
             @Override
             protected void done() {
                 try {
-                    imageDisplay.setImage(get());
+                    display.setImage(get());
                 } catch (Exception ignore) {}
             }
         };
@@ -142,7 +144,18 @@ public class Studio extends JPanel {
         image.setColorFunction(colorControls.getColorFunction());
         image.setColorFuncParams(colorControls.getColorFuncParams(image.zoom));
         image.colorImage();
-        imageDisplay.repaint();
+        display.repaint();
+    }
+
+    private void handleSelectView() {
+        display.setSelectingView(true);
+        selectViewButton.setBackground(SELECTED_BUTTON_COLOR);
+        selectViewButton.setText("Cancel");
+    }
+
+    public void handleCancelSelectView() {
+        selectViewButton.setBackground(Color.WHITE);
+        selectViewButton.setText("Select view");
     }
 
     void setZoomCoords(Complex center, double zoom) {
@@ -201,6 +214,18 @@ public class Studio extends JPanel {
         panel.add(exportButton, c);
 
         return panel;
+    }
+
+    private JButton selectViewButton() {
+        JButton button = new JButton("Select view");
+        button.addActionListener(e -> {
+            if (!display.selectingView()) handleSelectView();
+            else {
+                display.setSelectingView(false);
+                handleCancelSelectView();
+            }
+        });
+        return button;
     }
 
 }

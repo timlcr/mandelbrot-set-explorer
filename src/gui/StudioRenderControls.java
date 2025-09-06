@@ -18,7 +18,7 @@ import java.awt.GridLayout;
  * A dialog containing input fields which control parameters used to render new
  * MandelbrotImages.
  */
-public class RenderControls extends JDialog {
+public class StudioRenderControls extends JDialog {
 
     private final Color color;
 
@@ -39,12 +39,15 @@ public class RenderControls extends JDialog {
      * @param image The input fields will display parameters taken from this image. If null
      *              they wil display the default values.
      */
-    public RenderControls(Runnable imageRenderer, String title, Color color, MandelbrotImage image) {
+    public StudioRenderControls(
+            Runnable imageRenderer, String title, Color color, JButton selectViewButton,
+            MandelbrotImage image
+    ) {
         this.imageRenderer = imageRenderer;
         this.color = color;
         setTitle(title);
-        setMinimumSize(new Dimension(250, 350));
-        add(controlsPanel(), BorderLayout.CENTER);
+        setMinimumSize(new Dimension(250, 400));
+        add(controlsPanel(selectViewButton), BorderLayout.CENTER);
         setImage(image);
     }
 
@@ -65,8 +68,16 @@ public class RenderControls extends JDialog {
     }
 
     public void setZoomCoords(Complex center, double zoom) {
+        setCenter(center);
+        setZoomLevel(zoom);
+    }
+
+    public void setCenter(Complex center) {
         centerRealField.setText("" + center.real());
         centerImagField.setText("" + center.imaginary());
+    }
+
+    public void setZoomLevel(double zoom) {
         zoomField.setText("" + zoom);
     }
 
@@ -90,7 +101,7 @@ public class RenderControls extends JDialog {
         maxNField.setText("" + 100);
     }
 
-    private JPanel controlsPanel() {
+    private JPanel controlsPanel(JButton selectViewButton) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1));
         panel.add(GUI.titledComponent(widthField, "Width"));
@@ -99,6 +110,7 @@ public class RenderControls extends JDialog {
         panel.add(GUI.titledComponent(centerImagField, "Center imaginary part"));
         panel.add(GUI.titledComponent(zoomField, "Zoom"));
         panel.add(GUI.titledComponent(maxNField, "Max N"));
+        panel.add(selectViewButton);
         panel.add(renderButton());
         panel.add(hideButton());
         JPanel border = new JPanel(new GridLayout());
