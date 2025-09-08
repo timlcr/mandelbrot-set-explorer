@@ -2,6 +2,7 @@ package gui;
 
 import image.MandelbrotImage;
 import persistence.MandelbrotImageIO;
+import persistence.StorageHelper;
 import util.Complex;
 
 import javax.imageio.ImageIO;
@@ -67,8 +68,7 @@ public class Studio extends JPanel {
      * Loads a MandelbrotImage from a data file selected by the user.
      */
     public void handleLoad() {
-        File dataDir = new File("storage/imagedata");
-        if (!dataDir.exists()) { dataDir.mkdirs(); }
+        File dataDir = StorageHelper.getStorageDirectory();
         fileChooser.setCurrentDirectory(dataDir);
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             MandelbrotImage image = MandelbrotImageIO.load(fileChooser.getSelectedFile());
